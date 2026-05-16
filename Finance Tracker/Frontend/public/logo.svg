@@ -1,0 +1,50 @@
+<svg width="280" height="76" viewBox="0 0 280 76" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="wwLogoBg" x1="8" y1="8" x2="70" y2="68" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#0F172A"/>
+      <stop offset="0.55" stop-color="#1D4ED8"/>
+      <stop offset="1" stop-color="#14B8A6"/>
+    </linearGradient>
+    <linearGradient id="wwLogoGlow" x1="16" y1="18" x2="60" y2="58" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#FFFFFF" stop-opacity="0.92"/>
+      <stop offset="1" stop-color="#FFFFFF" stop-opacity="0.1"/>
+    </linearGradient>
+    <filter id="wwShadow" x="0" y="0" width="86" height="86" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+      <feDropShadow dx="0" dy="12" stdDeviation="9" flood-color="#0F172A" flood-opacity="0.18"/>
+    </filter>
+  </defs>
+
+  <g filter="url(#wwShadow)">
+    <rect x="8" y="8" width="62" height="62" rx="20" fill="url(#wwLogoBg)"/>
+    <rect x="16" y="16" width="46" height="46" rx="16" fill="url(#wwLogoGlow)"/>
+    <path
+      d="M21 28L28 50L35.5 35L43 50L50.5 28"
+      stroke="white"
+      stroke-width="5"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+    />
+    <path
+      d="M24 25H52"
+      stroke="#93C5FD"
+      stroke-width="3"
+      stroke-linecap="round"
+      opacity="0.7"
+    />
+  </g>
+
+  <text x="88" y="38" fill="#0F172A" font-size="25" font-weight="800" font-family="Segoe UI, Arial, sans-serif">
+    Wealth Wise
+  </text>
+  <text
+    x="88"
+    y="57"
+    fill="#64748B"
+    font-size="9.5"
+    font-weight="700"
+    letter-spacing="3"
+    font-family="Segoe UI, Arial, sans-serif"
+  >
+    SMART MONEY PLATFORM
+  </text>
+</svg>

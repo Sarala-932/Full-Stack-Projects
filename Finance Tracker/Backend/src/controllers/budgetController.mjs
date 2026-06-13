@@ -27,8 +27,17 @@ const getCurrentBudget = async (req, res) => {
 
     // get current month start and end
     const currentDate = new Date();
-    const startOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
-    const endOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0);
+    const testMonth = 3;
+    const startOfMonth = new Date(currentDate.getFullYear(), testMonth, 1);
+    const endOfMonth = new Date(
+      currentDate.getFullYear(),
+      testMonth + 1,
+      0,
+      23,
+      59,
+      59,
+      999,
+    );
 
     // calculate total expenses for current month
     const expenses = await transactionModel.aggregate([
@@ -37,10 +46,10 @@ const getCurrentBudget = async (req, res) => {
           userId: user._id,
           type: "EXPENSE",
           accountId: accountObjectId,
-          //   date: {
-          //     $gte: startOfMonth,
-          //     $lte: endOfMonth,
-          //   },
+          date: {
+            $gte: startOfMonth,
+            $lte: endOfMonth,
+          },
         },
       },
       {
@@ -86,11 +95,13 @@ const updateBudget = async (req, res) => {
     }
 
     // ✅ upsert → update if exists, create if not
-    const budget = await budgetModel.findOneAndUpdate(
-      {userId: user._id}, // find by userId
-      {amount: parseFloat(amount)}, // update amount
-      {new: true, upsert: true}, // create if not exists
-    );
+    const budget = await budgetModel
+      .findOneAndUpdate(
+        {userId: user._id},
+        {amount: parseFloat(amount), lastAlertSent: null},
+        {new: true, upsert: true},
+      )
+      .lean();
 
     return res.status(200).json({success: true, data: budget});
   } catch (error) {

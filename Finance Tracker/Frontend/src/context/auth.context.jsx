@@ -29,7 +29,7 @@ function AuthProvider({children}) {
         };
         const response = await syncUserWithBackend(userData, token);
         setUser(response.data.user);
-        console.log(response.data.user);
+        // console.log(response.data.user);
         setError(null);
       } catch (err) {
         setError(err.message);
@@ -41,9 +41,7 @@ function AuthProvider({children}) {
   };
 
   useEffect(() => {
-    // ✅ ignore flag prevents state update on unmounted component
     let ignore = false;
-
     const sync = async () => {
       if (!ignore && isAuthLoaded && isUserLoaded) {
         if (isSignedIn) {

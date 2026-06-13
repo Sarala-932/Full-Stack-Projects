@@ -2,6 +2,7 @@ import express from "express";
 import mongoose from "mongoose";
 import router from "./src/route.mjs";
 import config from "./config.mjs";
+import {emailTemplate} from "./src/emails/template.js";
 import {clerkMiddleware} from "@clerk/express";
 import cookieParser from "cookie-parser";
 import cors from "cors";
@@ -27,6 +28,20 @@ mongoose
     });
 
 app.use("/", router);
+
+app.get("/api/preview-email", (req, res) => {
+    const html = emailTemplate({
+        userName: "John Doe",
+        type: "budget-alert", // Change this to "monthly-report" to see the other template!
+        data: {
+            percentageUsed: 85.5,
+            budgetAmount: 1000,
+            totalExpenses: 855,
+            accountName: "Main Bank Account"
+        }
+    });
+    res.send(html);
+});
 
 app.listen(config.port, () => {
     console.log(`Server is running on port ${config.port}`);

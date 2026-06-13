@@ -59,6 +59,10 @@ export default function BudgetProgress({initialBudget, currentExpenses, onUpdate
     if (updatedBudget?.success) {
       setIsEditing(false);
       toast.success("Budget updated successfully");
+
+      if (onUpdate) {
+        onUpdate();
+      }
     }
   }, [updatedBudget]);
 

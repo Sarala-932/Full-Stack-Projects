@@ -10,7 +10,9 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
+    "@arcjet/node": "^1.4.0",
     "@clerk/express": "^2.1.1",
+    "@react-email/ui": "^6.1.4",
     "bcrypt": "^6.0.0",
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.6",
@@ -19,6 +21,9 @@
     "express": "^5.2.1",
     "inngest": "^4.2.6",
     "jsonwebtoken": "^9.0.3",
-    "mongoose": "^9.4.1"
+    "mongoose": "^9.4.1",
+    "react-email": "^6.1.4",
+    "resend": "^6.12.3",
+    "tsx": "^4.22.0"
   }
 }

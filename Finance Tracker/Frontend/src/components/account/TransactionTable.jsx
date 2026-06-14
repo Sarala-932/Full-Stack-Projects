@@ -1,7 +1,8 @@
 import {useState, useMemo, useEffect} from "react";
 import {useNavigate} from "react-router";
-import {format} from "date-fns";
+import {format,startOfDay, endOfDay, subDays} from "date-fns";
 import {toast} from "sonner";
+import {DATE_RANGES} from "./AccountChart";
 import {BarLoader} from "react-spinners";
 import {
   ChevronDown,
@@ -62,7 +63,7 @@ const RECURRING_INTERVALS = {
   YEARLY: "Yearly",
 };
 
-export default function TransactionTable({transactions, accountId, balance, onDelete}) {
+export default function TransactionTable({transactions, accountId, balance, onDelete,dateRange}) {
   const navigate = useNavigate();
 
   const [selectedIds, setSelectedIds] = useState([]);
@@ -96,6 +97,19 @@ export default function TransactionTable({transactions, accountId, balance, onDe
 
   const filteredAndSortedTransactions = useMemo(() => {
     let result = [...transactionsWithBalance];
+
+    if (dateRange && DATE_RANGES[dateRange]) {
+      const range = DATE_RANGES[dateRange];
+      const now = new Date();
+      const startDate = range.days
+        ? startOfDay(subDays(now, range.days))
+        : startOfDay(new Date(0));
+      result = result.filter(
+        (transaction) =>
+          new Date(transaction.date) >= startDate &&
+          new Date(transaction.date) <= endOfDay(now)
+      );
+    }
 
     if (searchTerm) {
       const searchLower = searchTerm.toLowerCase();
@@ -134,7 +148,7 @@ export default function TransactionTable({transactions, accountId, balance, onDe
     });
 
     return result;
-  }, [transactions, searchTerm, typeFilter, recurringFilter, sortConfig]);
+  }, [transactionsWithBalance, searchTerm, typeFilter, recurringFilter, sortConfig, dateRange]);
 
   const totalPages = Math.ceil(filteredAndSortedTransactions.length / ITEMS_PER_PAGE);
 
@@ -143,11 +157,18 @@ export default function TransactionTable({transactions, accountId, balance, onDe
     return filteredAndSortedTransactions.slice(startIndex, startIndex + ITEMS_PER_PAGE);
   }, [filteredAndSortedTransactions, currentPage]);
 
-  const totalFilteredAmount = useMemo(() => {
+  const totalPageAmount = useMemo(() => {
+    return paginatedTransactions.reduce((sum, transaction) => {
+      return sum + (transaction.type === "EXPENSE" ? -transaction.amount : transaction.amount);
+    }, 0);
+  }, [paginatedTransactions]);
+
+    const totalFilteredAmount = useMemo(() => {
     return filteredAndSortedTransactions.reduce((sum, transaction) => {
       return sum + (transaction.type === "EXPENSE" ? -transaction.amount : transaction.amount);
     }, 0);
   }, [filteredAndSortedTransactions]);
+
 
   const handleSort = (field) => {
     setSortConfig((current) => ({
@@ -439,7 +460,22 @@ export default function TransactionTable({transactions, accountId, balance, onDe
           <TableFooter>
             <TableRow>
               <TableCell colSpan={4} className="font-bold text-right">
-                Total :
+                Page Total :
+              </TableCell>
+              <TableCell
+                className={cn(
+                  "text-right font-bold pr-10",
+                  totalPageAmount >= 0 ? "text-green-500" : "text-red-500"
+                )}
+              >
+                {totalPageAmount < 0 ? "-" : "+"}₹{Math.abs(totalPageAmount).toFixed(2)}
+              </TableCell>
+              <TableCell colSpan={3}></TableCell>
+            </TableRow>
+
+             <TableRow>
+              <TableCell colSpan={4} className="font-bold text-right">
+                Filtered Total :
               </TableCell>
               <TableCell
                 className={cn(

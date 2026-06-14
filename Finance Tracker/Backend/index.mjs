@@ -1,8 +1,10 @@
+import "dotenv/config";
 import express from "express";
 import mongoose from "mongoose";
 import router from "./src/route.mjs";
+import inngestRouter from "./src/inngestroute/ingestRoutes.mjs";
 import config from "./config.mjs";
-import {emailTemplate} from "./src/emails/template.js";
+import {emailTemplate} from "./src/lib/emailTemplate.js";
 import {clerkMiddleware} from "@clerk/express";
 import cookieParser from "cookie-parser";
 import cors from "cors";
@@ -27,6 +29,7 @@ mongoose
         console.log("MongoDb connection error", err);
     });
 
+app.use("/api/inngest", inngestRouter);
 app.use("/", router);
 
 app.get("/api/preview-email", (req, res) => {

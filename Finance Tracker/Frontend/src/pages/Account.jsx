@@ -23,6 +23,8 @@ function Account() {
   const account = accountData ? { ...accountData, transactions: undefined } : null;
   const transactions = accountData?.transactions || [];
 
+  const [dateRange, setDateRange] = useState("1M");
+
   useEffect(() => {
     fetchAccount(accountId);
   }, [accountId]);
@@ -77,7 +79,11 @@ function Account() {
       </div>
 
       {/* Chart Section */}
-      <AccountChart transactions={transactions} />
+      <AccountChart 
+      transactions={transactions} 
+      dateRange={dateRange} 
+      onDateRangeChange={setDateRange}  
+      />
 
 
       {/* Transactions Table */}
@@ -86,6 +92,7 @@ function Account() {
         accountId={accountId} 
         balance={account.balance}
         onDelete={() => fetchAccount(accountId)} 
+        dateRange={dateRange}
       />
     </div>
   );

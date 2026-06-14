@@ -3,16 +3,20 @@ import authenticate from "./middleware/authentication.mjs";
 import registerUser from "./controllers/userController.mjs";
 import {createAccount, getUserAccounts} from "./controllers/dashboardController.mjs";
 import {
-  getAccountWithTransactions,
-  updateDefaultAccount,
-  bulkDeleteTransactions,
+    getAccountWithTransactions,
+    updateDefaultAccount,
+    bulkDeleteTransactions,
 } from "./controllers/accountController.mjs";
 import {getCurrentBudget, updateBudget} from "./controllers/budgetController.mjs";
+import {
+    bulkCreateTransactions,
+    createTransaction,
+} from "./controllers/transactionController.mjs";
 
 const router = express.Router();
 
 router.get("/api", (req, res) => {
-  res.send("API running successfully");
+    res.send("API running successfully");
 });
 
 // create a user
@@ -38,5 +42,9 @@ router.get("/:accountId/budget", authenticate, getCurrentBudget);
 
 // update budget
 router.post("/update", authenticate, updateBudget);
+
+router.post("/create", authenticate, createTransaction);
+
+router.post("/bulk-create", authenticate, bulkCreateTransactions);
 
 export default router;

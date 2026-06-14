@@ -20,7 +20,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
-const DATE_RANGES = {
+export const DATE_RANGES = {
   "7D": {label: "Last 7 Days", days: 7},
   "1M": {label: "Last Month", days: 30},
   "3M": {label: "Last 3 Months", days: 90},
@@ -28,8 +28,8 @@ const DATE_RANGES = {
   ALL: {label: "All Time", days: null},
 };
 
-function AccountChart({transactions}) {
-  const [dateRange, setDateRange] = useState("1M");
+function AccountChart({transactions,dateRange,onDateRangeChange}) {
+  // const [dateRange, setDateRange] = useState("1M");
 
   const filteredData = useMemo(() => {
     const range = DATE_RANGES[dateRange];
@@ -77,7 +77,7 @@ function AccountChart({transactions}) {
     <Card>
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">
         <CardTitle className="text-base font-normal">Transaction Overview</CardTitle>
-        <Select defaultValue={dateRange} onValueChange={setDateRange}>
+        <Select defaultValue={dateRange} onValueChange={onDateRangeChange}>
           <SelectTrigger className="w-[140px]">
             <SelectValue placeholder="Select range" />
           </SelectTrigger>

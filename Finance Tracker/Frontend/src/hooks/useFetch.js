@@ -25,10 +25,12 @@ const useFetch = (cb, cacheKey = null) => {
             setData(response);
             if (cacheKey) cache[cacheKey] = response;
             setError(null);
+            return response
         } catch (error) {
             const errorMsg = error.response?.data?.message || error.message;
             setError(error);
             toast.error(errorMsg);
+            throw error
         } finally {
             setLoading(false);
         }

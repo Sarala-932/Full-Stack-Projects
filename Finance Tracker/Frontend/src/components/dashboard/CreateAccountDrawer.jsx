@@ -7,7 +7,7 @@ import {z} from "zod";
 import useFetch from "../../hooks/useFetch";
 import {createAccount} from "../../services/dashboard.api";
 import {Button} from "@/components/ui/button";
-import {Drawer, DrawerContent, DrawerHeader, DrawerTitle, DrawerClose, DrawerDescription} from "@/components/ui/drawer";
+import {Drawer, DrawerContent, DrawerHeader, DrawerTitle, DrawerClose, DrawerDescription, DrawerTrigger} from "@/components/ui/drawer";
 import {Input} from "@/components/ui/input";
 import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select";
 import {Switch} from "@/components/ui/switch";
@@ -40,7 +40,7 @@ const BANK_NAMES = [
   "Other",
 ];
 
-export default function CreateAccountDrawer({open, onClose, onSuccess}) {
+export default function CreateAccountDrawer({open, onClose, onSuccess, children}) {
   const {
     register,
     handleSubmit,
@@ -94,8 +94,8 @@ export default function CreateAccountDrawer({open, onClose, onSuccess}) {
   useEffect(() => {
     if (newAccount) {
       toast.success("Account created successfully");
-      onSuccess(); // refresh dashboard
-      onClose(); // close drawer
+      if (onSuccess) onSuccess(); // refresh dashboard
+      if (onClose) onClose(); // close drawer
     }
   }, [newAccount, onSuccess, onClose]);
 
@@ -109,6 +109,7 @@ export default function CreateAccountDrawer({open, onClose, onSuccess}) {
 
   return (
     <Drawer open={open} onOpenChange={onClose}>
+      {children && <DrawerTrigger asChild>{children}</DrawerTrigger>}
       <DrawerContent aria-describedby={undefined}>
         <DrawerHeader>
           <DrawerTitle>Create New Account</DrawerTitle>

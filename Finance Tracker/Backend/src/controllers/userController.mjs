@@ -9,6 +9,9 @@ const registerUser = async (req, res) => {
             return res.status(401).send({message: "Unauthorized User"});
         }
         const clerkUser = await clerkClient.users.getUser(userId);
+        // console.log("All emails:", clerkUser.emailAddresses);
+        // console.log("Primary email:", clerkUser.primaryEmailAddressId);
+        // console.log("Email 0:", clerkUser.emailAddresses[0].emailAddress);
         const firstName = clerkUser.firstName || "";
         const lastName = clerkUser.lastName || "";
         const name = `${firstName} ${lastName}`.trim() || null;
@@ -21,6 +24,7 @@ const registerUser = async (req, res) => {
                 {
                     name: name || isUserAlreadyExist.name,
                     imageUrl: clerkUser.imageUrl || isUserAlreadyExist.imageUrl,
+                    email: clerkUser.emailAddresses[0].emailAddress,
                 },
                 {new: true},
             );

@@ -1,7 +1,6 @@
-
 function emailTemplate({userName, type, data}) {
-  if (type === "monthly-report") {
-    return `
+    if (type === "monthly-report") {
+        return `
       <div style="background-color: #f6f9fc; font-family: -apple-system, sans-serif; padding: 20px;">
         <div style="background-color: #ffffff; margin: 0 auto; padding: 20px; border-radius: 5px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); max-width: 600px;">
           
@@ -28,41 +27,41 @@ function emailTemplate({userName, type, data}) {
 
           <!-- Category Breakdown -->
           ${
-            data?.stats?.byCategory
-              ? `
+              data?.stats?.byCategory
+                  ? `
             <div style="margin-top: 32px; padding: 20px; background-color: #f9fafb; border-radius: 5px; border: 1px solid #e5e7eb;">
               <h2 style="color: #1f2937; font-size: 20px; font-weight: 600; margin: 0 0 16px;">Expenses by Category</h2>
               ${Object.entries(data.stats.byCategory)
-                .map(
-                  ([category, amount]) => `
+                  .map(
+                      ([category, amount]) => `
                 <div style="display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid #e5e7eb;">
                   <p style="color: #4b5563; font-size: 16px; margin: 0;">${category}</p>
                   <p style="color: #4b5563; font-size: 16px; margin: 0;">₹${amount}</p>
                 </div>
               `,
-                )
-                .join("")}
+                  )
+                  .join("")}
             </div>
           `
-              : ""
+                  : ""
           }
 
           <!-- AI Insights -->
           ${
-            data?.insights
-              ? `
+              data?.insights
+                  ? `
             <div style="margin-top: 32px; padding: 20px; background-color: #f9fafb; border-radius: 5px; border: 1px solid #e5e7eb;">
               <h2 style="color: #1f2937; font-size: 20px; font-weight: 600; margin: 0 0 16px;">Wealth Insights</h2>
               ${data.insights
-                .map(
-                  (insight) => `
+                  .map(
+                      (insight) => `
                 <p style="color: #4b5563; font-size: 16px; margin: 0 0 16px;">• ${insight}</p>
               `,
-                )
-                .join("")}
+                  )
+                  .join("")}
             </div>
           `
-              : ""
+                  : ""
           }
 
           <p style="color: #6b7280; font-size: 14px; text-align: center; margin-top: 32px; padding-top: 16px; border-top: 1px solid #e5e7eb;">
@@ -71,10 +70,10 @@ function emailTemplate({userName, type, data}) {
         </div>
       </div>
     `;
-  }
+    }
 
-  if (type === "budget-alert") {
-    return `
+    if (type === "budget-alert") {
+        return `
       <div style="background-color: #f6f9fc; font-family: -apple-system, sans-serif; padding: 20px;">
         <div style="background-color: #ffffff; margin: 0 auto; padding: 20px; border-radius: 5px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); max-width: 600px;">
           
@@ -103,7 +102,7 @@ function emailTemplate({userName, type, data}) {
         </div>
       </div>
     `;
-  }
+    }
 }
 
-module.exports = { emailTemplate };
+module.exports = {emailTemplate};

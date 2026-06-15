@@ -5,11 +5,44 @@ import userModel from "../models/userModel.mjs";
 import accountModel from "../models/accountModel.mjs";
 import {sendEmail} from "../lib/sendEmail.mjs";
 import {emailTemplate} from "../lib/emailTemplate.js";
-
+import mongoose from "mongoose";
 // Helper to check if it's a new month
-const isNewMonth = (date1, date2) => {
-    return date1.getMonth() !== date2.getMonth() || date1.getFullYear() !== date2.getFullYear();
-};
+function isNewMonth(lastAlertDate, currentDate) {
+    return (
+        lastAlertDate.getMonth() !== currentDate.getMonth() ||
+        lastAlertDate.getFullYear() !== currentDate.getFullYear()
+    );
+}
+
+function calculateNextRecurringDate(date, interval) {
+    const next = new Date(date);
+    switch (interval) {
+        case "DAILY":
+            next.setDate(next.getDate() + 1);
+            break;
+        case "WEEKLY":
+            next.setDate(next.getDate() + 7);
+            break;
+        case "MONTHLY":
+            next.setMonth(next.getMonth() + 1);
+            break;
+        case "YEARLY":
+            next.setFullYear(next.getFullYear() + 1);
+            break;
+    }
+    return next;
+}
+
+function isTransactionDue(transaction) {
+    // If no lastProcessed date, transaction is due
+    if (!transaction.lastProcessed) return true;
+
+    const today = new Date();
+    const nextDue = new Date(transaction.nextRecurringDate);
+
+    // Compare with nextDue date
+    return nextDue <= today;
+}
 
 export const checkBudgetAlerts = inngest.createFunction(
     {id: "check-budget-alerts", triggers: [{cron: "0 */6 * * *"}]},
@@ -95,14 +128,125 @@ export const checkBudgetAlerts = inngest.createFunction(
     },
 );
 
-// Your new function:
-// const helloWorld = inngest.createFunction(
-//     {id: "hello-world", triggers: [{event: "test/hello.world"}]},
-//     async ({event, step}) => {
-//         await step.sleep("wait-a-moment", "1s");
-//         return {message: `Hello ${event.data.email}!`};
-//     },
-// );
+export const triggerRecurringTransactions = inngest.createFunction(
+    {
+        id: "trigger-recurring-transactions",
+        name: "Trigger Recurring Transactions",
+        triggers: [{cron: "0 0 * * *"}], // Daily at midnight
+    },
+    async ({step}) => {
+        const recurringTransactions = await step.run("fetch-recurring-transactions", async () => {
+            return await transactionModel
+                .find({
+                    isRecurring: true,
+                    status: "COMPLETED",
+                    $or: [
+                        {lastProcessed: null},
+                        {lastProcessed: {$exists: false}},
+                        {nextRecurringDate: {$lte: new Date()}},
+                    ],
+                })
+                .lean();
+        });
 
-// Add the function to the exported array:
-// export const functions = [helloWorld];
+        // Send event for each recurring transaction in batches
+        if (recurringTransactions.length > 0) {
+            const events = recurringTransactions.map((transaction) => ({
+                name: "transaction.recurring.process",
+                data: {
+                    transactionId: transaction._id.toString(),
+                    userId: transaction.userId.toString(),
+                },
+            }));
+
+            // Send events directly using inngest.send()
+            await inngest.send(events);
+        }
+
+        return {triggered: recurringTransactions.length};
+    },
+);
+
+export const processRecurringTransaction = inngest.createFunction(
+    {
+        id: "process-recurring-transaction",
+        name: "Process Recurring Transaction",
+        triggers: [{event: "transaction.recurring.process"}],
+        throttle: {
+            limit: 10, // Process 10 transactions
+            period: "1m", // per minute
+            key: "event.data.userId", // Throttle per user
+        },
+    },
+    async ({event, step}) => {
+        // Validate event data
+        if (!event?.data?.transactionId || !event?.data?.userId) {
+            console.error("Invalid event data:", event);
+            return {error: "Missing required event data"};
+        }
+
+        await step.run("process-transaction", async () => {
+            const transaction = await transactionModel
+                .findOne({
+                    _id: event.data.transactionId,
+                    userId: event.data.userId,
+                })
+                .lean();
+
+            if (!transaction || !isTransactionDue(transaction)) return;
+
+            const session = await mongoose.startSession();
+            session.startTransaction();
+
+            try {
+                // Create new transaction
+                await transactionModel.create(
+                    [
+                        {
+                            type: transaction.type,
+                            amount: transaction.amount,
+                            description: `${transaction.description} (Recurring)`,
+                            date: new Date(),
+                            category: transaction.category,
+                            userId: transaction.userId,
+                            accountId: transaction.accountId,
+                            isRecurring: false,
+                            status: "COMPLETED",
+                        },
+                    ],
+                    {session},
+                );
+
+                // Update account balance
+                const balanceChange =
+                    transaction.type === "EXPENSE" ? -transaction.amount : transaction.amount;
+
+                await accountModel.findByIdAndUpdate(
+                    transaction.accountId,
+                    {$inc: {balance: balanceChange}},
+                    {session},
+                );
+
+                // Update last processed date and next recurring date
+                await transactionModel.findByIdAndUpdate(
+                    transaction._id,
+                    {
+                        lastProcessed: new Date(),
+                        nextRecurringDate: calculateNextRecurringDate(
+                            new Date(),
+                            transaction.recurringInterval,
+                        ),
+                    },
+                    {session},
+                );
+
+                await session.commitTransaction();
+            } catch (error) {
+                await session.abortTransaction();
+                throw error;
+            } finally {
+                session.endSession();
+            }
+        });
+    },
+);

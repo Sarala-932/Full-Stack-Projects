@@ -1,4 +1,4 @@
-import {Routes, Route, Navigate} from "react-router";
+import {Routes, Route, Navigate, useLocation} from "react-router";
 import {useAuth as useClerkAuth} from "@clerk/react";
 import {BarLoader} from "react-spinners";
 import Header from "../components/Header";
@@ -26,6 +26,10 @@ const ProtectedRoute = ({children}) => {
 };
 
 export default function AppRoutes() {
+  const location = useLocation();
+  const hideFooterPaths = ["/transaction/create"];
+  const shouldShowFooter = !hideFooterPaths.includes(location.pathname);
+
   return (
     <div className="flex flex-col min-h-screen">
       <Header />
@@ -63,7 +67,7 @@ export default function AppRoutes() {
           <Route path="*" element={<NotFound />} />
         </Routes>
       </main>
-      <Footer />
+      {shouldShowFooter && <Footer />}
     </div>
   );
 }

@@ -9,7 +9,7 @@ export default function App() {
       <AuthProvider>
         <AppRoutes />
       </AuthProvider>
-      <Toaster richColors position="top-right" />
+      <Toaster richColors position="top-right" closeButton theme="light" />
     </div>
   );
 }

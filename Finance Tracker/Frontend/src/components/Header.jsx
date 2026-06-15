@@ -7,6 +7,10 @@ export default function Header() {
   const {pathname} = useLocation();
   const isSignInPage = pathname.startsWith("/sign-in");
 
+  const match = pathname.match(/^\/accounts\/([^/]+)/);
+  const currentAccountId = match ? match[1] : null;
+  const createTransactionLink = currentAccountId ? `/transaction/create?accountId=${currentAccountId}` : "/transaction/create";
+
   return (
     <div className="fixed top-0 w-full bg-white/80 backdrop-blur-md z-50 border-b">
       <nav className="container mx-auto px-4 py-4 flex items-center justify-between">
@@ -32,7 +36,7 @@ export default function Header() {
               </Button>
             </Link>
 
-            <Link to="/transaction/create">
+            <Link to={createTransactionLink}>
               <Button className="flex items-center gap-2">
                 <PenBox size={18} />
                 <span className="hidden md:inline cursor-pointer">Add Transaction</span>

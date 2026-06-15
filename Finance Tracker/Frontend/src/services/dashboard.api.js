@@ -24,5 +24,3 @@ export const getUserAccounts = async (token) => {
   });
   return res.data;
 };
-
-

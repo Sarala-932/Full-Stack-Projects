@@ -7,6 +7,8 @@ const config = {
   clerkSecretKey: process.env.CLERK_SECRET_KEY,
   jwtSecret: process.env.JWT_SECRET,
   resendApiKey: process.env.RESEND_API_KEY,
+  arcjetKey: process.env.ARCJET_KEY,
+  geminiApiKey: process.env.GEMINI_API_KEY,
 };
 
 export default config;

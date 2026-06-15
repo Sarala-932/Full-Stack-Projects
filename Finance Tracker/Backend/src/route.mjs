@@ -11,9 +11,14 @@ import {getCurrentBudget, updateBudget} from "./controllers/budgetController.mjs
 import {
     bulkCreateTransactions,
     createTransaction,
+    scanReceipt,
+    getTransaction,
+    updateTransaction
 } from "./controllers/transactionController.mjs";
+import multer from "multer";
 
 const router = express.Router();
+const upload = multer({ storage: multer.memoryStorage() });
 
 router.get("/api", (req, res) => {
     res.send("API running successfully");
@@ -45,6 +50,11 @@ router.post("/update", authenticate, updateBudget);
 
 router.post("/create", authenticate, createTransaction);
 
+router.post("/scan", authenticate, upload.single("file"), scanReceipt);
+
 router.post("/bulk-create", authenticate, bulkCreateTransactions);
+
+router.get("/transaction/:id", authenticate, getTransaction);
+router.put("/transaction/:id", authenticate, updateTransaction);
 
 export default router;

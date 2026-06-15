@@ -1,21 +1,23 @@
 import useFetch from "@/hooks/useFetch";
 import {zodResolver} from "@hookform/resolvers/zod";
-import {useEffect} from "react";
+import {useEffect, useState, useRef} from "react";
 import {useForm} from "react-hook-form";
-import {useNavigate} from "react-router";
+import {useNavigate, useSearchParams} from "react-router";
 import {z} from "zod";
-import {createTransaction} from "@/services/transaction.api";
+import {createTransaction, updateTransaction} from "@/services/transaction.api";
 import {SelectValue, Select, SelectTrigger, SelectContent, SelectItem} from "../ui/select";
 import {Input} from "../ui/input";
 import CreateAccountDrawer from "../dashboard/CreateAccountDrawer";
 import {Button} from "@/components/ui/button";
 import {Popover, PopoverContent, PopoverTrigger} from "@/components/ui/popover";
+import {PopoverAnchor} from "@radix-ui/react-popover";
 import {cn} from "@/lib/utils";
 import {format} from "date-fns";
-import {Calendar1Icon} from "lucide-react";
+import {Calendar1Icon, Loader2} from "lucide-react";
 import {Calendar} from "@/components/ui/calendar";
 import {Switch} from "../ui/switch";
 import {toast} from "sonner";
+import {ReceiptScanner} from "./ReceiptScanner";
 
 export const transactionSchema = z
     .object({
@@ -40,6 +42,10 @@ export const transactionSchema = z
 
 function AddTransactionForm({accounts, categories, editMode = false, initialData = null}) {
     const navigate = useNavigate();
+    const [searchParams] = useSearchParams();
+    const accountIdParam = searchParams.get("accountId");
+
+    const defaultAccountId = accountIdParam || accounts.find((ac) => ac.isDefault)?._id;
 
     const {
         register,
@@ -51,25 +57,51 @@ function AddTransactionForm({accounts, categories, editMode = false, initialData
         reset,
     } = useForm({
         resolver: zodResolver(transactionSchema),
-        defaultValues: {
-            type: "EXPENSE",
-            amount: "",
-            description: "",
-            accountId: accounts.find((ac) => ac.isDefault)?._id,
-            date: new Date(),
-            isRecurring: false,
-        },
+        defaultValues:
+            editMode && initialData
+                ? {
+                      ...initialData,
+                      amount: initialData.amount.toString(),
+                      date: new Date(initialData.date),
+                  }
+                : {
+                      type: "EXPENSE",
+                      amount: "",
+                      description: "",
+                      accountId: defaultAccountId,
+                      date: new Date(),
+                      isRecurring: false,
+                  },
     });
     const {
         loading: transactionLoading,
         fn: transactionFn,
         data: transactionResult,
-    } = useFetch(createTransaction);
+    } = useFetch(editMode ? updateTransaction : createTransaction);
 
     const type = watch("type");
     const isRecurring = watch("isRecurring");
     const date = watch("date");
-    // const [isDrawerOpen, setIsDrawerOpen] = React.useState(false);
+    const category = watch("category");
+    const [isDatePickerOpen, setIsDatePickerOpen] = useState(false);
+
+    const [inputValue, setInputValue] = useState("");
+    const inputValueRef = useRef(inputValue);
+    useEffect(() => {
+        inputValueRef.current = inputValue;
+    }, [inputValue]);
+
+    useEffect(() => {
+        if (date) {
+            const parsedInput = new Date(inputValueRef.current);
+            const isSameDate =
+                !isNaN(parsedInput.getTime()) &&
+                format(parsedInput, "yyyy-MM-dd") === format(date, "yyyy-MM-dd");
+            if (!isSameDate) {
+                setInputValue(format(date, "dd MMM yyyy"));
+            }
+        }
+    }, [date]);
 
     const filteredCategories = categories.filter((category) => category.type === type);
 
@@ -79,20 +111,40 @@ function AddTransactionForm({accounts, categories, editMode = false, initialData
             amount: parseFloat(data.amount),
         };
 
-        transactionFn(formData);
+        if (editMode) {
+            transactionFn(initialData._id, formData);
+        } else {
+            transactionFn(formData);
+        }
     };
 
     useEffect(() => {
         if (transactionResult?.success && !transactionLoading) {
-            toast.success("Transaction created successfully");
+            toast.success(editMode ? "Transaction updated successfully" : "Transaction created successfully");
             reset();
             navigate(`/accounts/${transactionResult.data.accountId}`);
         }
-    }, [transactionResult, transactionLoading]);
+    }, [transactionResult, transactionLoading, editMode, navigate, reset]);
+
+    const handleScanComplete = (scannedData) => {
+        // console.log("scannedData",scannedData);
+
+        if (scannedData) {
+            setValue("amount", scannedData.amount.toString());
+            setValue("date", new Date(scannedData.date));
+            if (scannedData.description) {
+                setValue("description", scannedData.description);
+            }
+            if (scannedData.category) {
+                setValue("category", scannedData.category);
+            }
+        }
+    };
 
     return (
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
             {/* Ai Receipt scanner */}
+            <ReceiptScanner onScanComplete={handleScanComplete} />
 
             {/* Type */}
             <div className="space-y-2">
@@ -151,10 +203,7 @@ function AddTransactionForm({accounts, categories, editMode = false, initialData
 
             <div className="space-y-2">
                 <label className="text-sm font-medium">Category</label>
-                <Select
-                    onValueChange={(value) => setValue("category", value)}
-                    defaultValue={getValues("category")}
-                >
+                <Select onValueChange={(value) => setValue("category", value)} value={category}>
                     <SelectTrigger>
                         <SelectValue placeholder="Select category" />
                     </SelectTrigger>
@@ -173,26 +222,45 @@ function AddTransactionForm({accounts, categories, editMode = false, initialData
 
             <div className="space-y-2">
                 <label className="text-sm font-medium">Date</label>
-                <Popover>
-                    <PopoverTrigger asChild>
-                        <Button
-                            variant="outline"
-                            className={cn(
-                                "w-full pl-3 text-left font-normal",
-                                !date && "text-muted-foreground",
-                            )}
-                        >
-                            {date ? format(date, "PPP") : <span>Pick a date</span>}
-                            <Calendar1Icon className="ml-auto h-4 w-4 opacity-50" />
-                        </Button>
-                    </PopoverTrigger>
-                    <PopoverContent className="w-auto p-0" align="start">
+                <Popover open={isDatePickerOpen} onOpenChange={setIsDatePickerOpen}>
+                    <PopoverAnchor asChild>
+                        <div className="relative flex items-center date-input-container">
+                            <Input
+                                type="text"
+                                value={inputValue}
+                                onChange={(e) => {
+                                    setInputValue(e.target.value);
+                                    const parsed = new Date(e.target.value);
+                                    if (!isNaN(parsed.getTime()) && parsed.getFullYear() > 1900) {
+                                        setValue("date", parsed);
+                                    }
+                                }}
+                                onClick={() => setIsDatePickerOpen(true)}
+                                placeholder="e.g., 15 Jun 2026"
+                                className="pl-3"
+                            />
+                        </div>
+                    </PopoverAnchor>
+                    <PopoverContent
+                        className="w-auto p-0"
+                        align="start"
+                        onOpenAutoFocus={(e) => e.preventDefault()}
+                        onPointerDownOutside={(e) => {
+                            if (e.target.closest(".date-input-container")) {
+                                e.preventDefault();
+                            }
+                        }}
+                    >
                         <Calendar
                             mode="single"
                             selected={date}
-                            onSelect={(date) => setValue("date", date)}
-                            disabled={(date) => date > new Date() || date < new Date("1900-01-01")}
-                            initialFocus
+                            onSelect={(newDate) => {
+                                if (newDate) {
+                                    setValue("date", newDate);
+                                    setIsDatePickerOpen(false);
+                                }
+                            }}
+                            disabled={(d) => d > new Date() || d < new Date("1900-01-01")}
                         />
                     </PopoverContent>
                 </Popover>
@@ -250,17 +318,16 @@ function AddTransactionForm({accounts, categories, editMode = false, initialData
                     Cancel
                 </Button>
                 <Button type="submit" className="flex-1" disabled={transactionLoading}>
-                    {/* {transactionLoading ? (
+                    {transactionLoading ? (
                         <>
-                            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                            <Loader2 className="mr-2 h-4 w-4 animate-spin inline" />
                             {editMode ? "Updating..." : "Creating..."}
                         </>
                     ) : editMode ? (
                         "Update Transaction"
                     ) : (
                         "Create Transaction"
-                    )} */}
-                    Create Transaction
+                    )}
                 </Button>
             </div>
         </form>

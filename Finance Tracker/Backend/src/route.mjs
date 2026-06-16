@@ -1,7 +1,7 @@
 import express from "express";
 import authenticate from "./middleware/authentication.mjs";
 import registerUser from "./controllers/userController.mjs";
-import {createAccount, getUserAccounts} from "./controllers/dashboardController.mjs";
+import {createAccount, getUserAccounts, getDashboardData} from "./controllers/dashboardController.mjs";
 import {
     getAccountWithTransactions,
     updateDefaultAccount,
@@ -32,6 +32,9 @@ router.post("/create-account", authenticate, createAccount);
 
 // get user accounts
 router.get("/user-accounts", authenticate, getUserAccounts);
+
+// get dashboard transactions
+router.get("/dashboard", authenticate, getDashboardData);
 
 // update default account
 router.patch("/account/:accountId", authenticate, updateDefaultAccount);

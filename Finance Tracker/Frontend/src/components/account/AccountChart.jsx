@@ -1,5 +1,6 @@
 import {endOfDay, format, startOfDay, subDays} from "date-fns";
 import React, {useMemo, useState} from "react";
+import {CalendarIcon} from "lucide-react";
 import {
   BarChart,
   Bar,
@@ -19,6 +20,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import {Popover, PopoverContent, PopoverTrigger} from "@/components/ui/popover";
+import {Button} from "@/components/ui/button";
+import {Calendar} from "@/components/ui/calendar";
+import {cn} from "@/lib/utils";
 
 export const DATE_RANGES = {
   "7D": {label: "Last 7 Days", days: 7},
@@ -26,21 +31,28 @@ export const DATE_RANGES = {
   "3M": {label: "Last 3 Months", days: 90},
   "6M": {label: "Last 6 Months", days: 180},
   ALL: {label: "All Time", days: null},
+  CUSTOM: {label: "Custom Range", days: null},
 };
 
-function AccountChart({transactions,dateRange,onDateRangeChange}) {
-  // const [dateRange, setDateRange] = useState("1M");
+function AccountChart({transactions, dateRange, onDateRangeChange, customDateRange, onCustomDateRangeChange}) {
 
   const filteredData = useMemo(() => {
-    const range = DATE_RANGES[dateRange];
+    let startDate, endDate;
 
-    const now = new Date();
-    const startDate = range.days
-      ? startOfDay(subDays(now, range.days))
-      : startOfDay(new Date(0));
+    if (dateRange === "CUSTOM" && customDateRange?.from && customDateRange?.to) {
+      startDate = startOfDay(customDateRange.from);
+      endDate = endOfDay(customDateRange.to);
+    } else {
+      const range = DATE_RANGES[dateRange];
+      const now = new Date();
+      startDate = range.days
+        ? startOfDay(subDays(now, range.days))
+        : startOfDay(new Date(0));
+      endDate = endOfDay(now);
+    }
 
     const filtered = transactions.filter((t) => {
-      return new Date(t.date) >= startDate && new Date(t.date) <= endOfDay(now);
+      return new Date(t.date) >= startDate && new Date(t.date) <= endDate;
     });
 
     const grouped = filtered.reduce((acc, transaction) => {
@@ -60,7 +72,7 @@ function AccountChart({transactions,dateRange,onDateRangeChange}) {
     }, {});
 
     return Object.values(grouped).sort((a, b) => new Date(a.date) - new Date(b.date));
-  }, [transactions, dateRange]);
+  }, [transactions, dateRange, customDateRange]);
 
   // console.log(filteredData);
 
@@ -77,18 +89,58 @@ function AccountChart({transactions,dateRange,onDateRangeChange}) {
     <Card>
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">
         <CardTitle className="text-base font-normal">Transaction Overview</CardTitle>
-        <Select defaultValue={dateRange} onValueChange={onDateRangeChange}>
-          <SelectTrigger className="w-[140px]">
-            <SelectValue placeholder="Select range" />
-          </SelectTrigger>
-          <SelectContent>
-            {Object.entries(DATE_RANGES).map(([key, {label}]) => (
-              <SelectItem key={key} value={key}>
-                {label}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
+        <div className="flex items-center gap-2">
+          <Select defaultValue={dateRange} onValueChange={onDateRangeChange}>
+            <SelectTrigger className="w-[140px]">
+              <SelectValue placeholder="Select range" />
+            </SelectTrigger>
+            <SelectContent>
+              {Object.entries(DATE_RANGES).map(([key, {label}]) => (
+                <SelectItem key={key} value={key}>
+                  {label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+
+          {dateRange === "CUSTOM" && (
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button
+                  variant={"outline"}
+                  className={cn(
+                    "w-[240px] justify-start text-left font-normal",
+                    !customDateRange?.from && "text-muted-foreground"
+                  )}
+                >
+                  <CalendarIcon className="mr-2 h-4 w-4" />
+                  {customDateRange?.from ? (
+                    customDateRange.to ? (
+                      <>
+                        {format(customDateRange.from, "LLL dd, y")} -{" "}
+                        {format(customDateRange.to, "LLL dd, y")}
+                      </>
+                    ) : (
+                      format(customDateRange.from, "LLL dd, y")
+                    )
+                  ) : (
+                    <span>Pick a date range</span>
+                  )}
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-auto p-0" align="end">
+                <Calendar
+                  initialFocus
+                  mode="range"
+                  defaultMonth={customDateRange?.from}
+                  selected={customDateRange}
+                  onSelect={onCustomDateRangeChange}
+                  numberOfMonths={2}
+                />
+              </PopoverContent>
+            </Popover>
+          )}
+        </div>
       </CardHeader>
       <CardContent>
         <div className="flex justify-around mb-6 text-sm">

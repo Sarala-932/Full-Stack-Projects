@@ -3,10 +3,11 @@ import CreateAccountDrawer from "../components/dashboard/CreateAccountDrawer";
 import {Card, CardContent} from "@/components/ui/card";
 import {Plus} from "lucide-react";
 import useFetch from "../hooks/useFetch";
-import {getUserAccounts} from "../services/dashboard.api";
+import {getUserAccounts, getDashboardData} from "../services/dashboard.api";
 import AccountCard from "@/components/dashboard/AccountCard";
 import BudgetProgress from "@/components/dashboard/BudgetProgress";
 import {getCurrentBudget} from "../services/budget.api";
+import DashboardOverview from "@/components/dashboard/DashboardOverview";
 
 function Dashboard() {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
@@ -18,8 +19,15 @@ function Dashboard() {
     setData: setAccounts,
   } = useFetch(getUserAccounts);
 
+  const {
+    data: transactions,
+    loading: transactionsLoading,
+    fn: fetchTransactions,
+  } = useFetch(getDashboardData);
+
   useEffect(() => {
     fetchAccounts();
+    fetchTransactions();
   }, []);
 
   const defaultAccount = accounts?.find((account) => account.isDefault);
@@ -60,6 +68,12 @@ function Dashboard() {
       )}
 
       {/* overview */}
+      {transactions && (
+        <DashboardOverview
+          accounts={accounts}
+          transactions={transactions || []}
+        />
+      )}
 
       {/* accounts grid */}
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">

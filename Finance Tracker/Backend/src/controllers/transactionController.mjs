@@ -265,7 +265,7 @@ export const scanReceipt = async (req, res) => {
             return res.status(400).json({success: false, message: "No file provided"});
         }
 
-        const model = genAi.getGenerativeModel({model: "gemini-flash-latest"});
+        const model = genAi.getGenerativeModel({model: "gemini-2.5-flash"});
 
         // multer memoryStorage provides the file buffer directly
         const base64String = file.buffer.toString("base64");

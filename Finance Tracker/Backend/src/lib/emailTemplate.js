@@ -10,6 +10,7 @@ function emailTemplate({userName, type, data}) {
           <p style="color: #4b5563; font-size: 16px; margin: 0 0 16px;">Here's your financial summary for ${data?.month}:</p>
 
           <!-- Main Stats -->
+          
           <div style="margin: 32px 0; padding: 20px; background-color: #f9fafb; border-radius: 5px;">
             <div style="margin-bottom: 16px; padding: 12px; background-color: #fff; border-radius: 4px; box-shadow: 0 1px 2px rgba(0,0,0,0.05);">
               <p style="color: #4b5563; font-size: 16px; margin: 0 0 8px;">Total Income</p>

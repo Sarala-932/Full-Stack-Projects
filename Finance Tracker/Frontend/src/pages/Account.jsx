@@ -24,6 +24,7 @@ function Account() {
   const transactions = accountData?.transactions || [];
 
   const [dateRange, setDateRange] = useState("1M");
+  const [customDateRange, setCustomDateRange] = useState({from: undefined, to: undefined});
 
   useEffect(() => {
     fetchAccount(accountId);
@@ -83,6 +84,8 @@ function Account() {
       transactions={transactions} 
       dateRange={dateRange} 
       onDateRangeChange={setDateRange}  
+      customDateRange={customDateRange}
+      onCustomDateRangeChange={setCustomDateRange}
       />
 
 
@@ -93,6 +96,7 @@ function Account() {
         balance={account.balance}
         onDelete={() => fetchAccount(accountId)} 
         dateRange={dateRange}
+        customDateRange={customDateRange}
       />
     </div>
   );

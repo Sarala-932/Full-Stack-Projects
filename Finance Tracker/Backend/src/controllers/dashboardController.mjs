@@ -1,5 +1,6 @@
 import accountModel from "../models/accountModel.mjs";
 import userModel from "../models/userModel.mjs";
+import transactionModel from "../models/transactionModel.mjs";
 
 const createAccount = async (req, res) => {
     try {
@@ -110,4 +111,28 @@ const getUserAccounts = async (req, res) => {
     }
 };
 
-export {createAccount, getUserAccounts};
+const getDashboardData = async (req, res) => {
+    try {
+        const clerkUserId = req.userId;
+        if (!clerkUserId) {
+            return res.status(401).send({message: "Unauthorized"});
+        }
+
+        const user = await userModel.findOne({clerkUserId}).select("_id").lean();
+        if (!user) {
+            return res.status(404).send({message: "User not found"});
+        }
+
+        // Get all user transactions ordered by date descending
+        const transactions = await transactionModel
+            .find({userId: user._id})
+            .sort({date: -1})
+            .lean();
+
+        return res.status(200).send(transactions);
+    } catch (error) {
+        return res.status(500).send({message: "Internal Server Error", error: error.message});
+    }
+};
+
+export {createAccount, getUserAccounts, getDashboardData};

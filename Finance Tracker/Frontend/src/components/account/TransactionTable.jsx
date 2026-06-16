@@ -15,6 +15,7 @@ import {
   ChevronRight,
   RefreshCw,
   Clock,
+  Download,
 } from "lucide-react";
 import {
   Table,
@@ -63,7 +64,7 @@ const RECURRING_INTERVALS = {
   YEARLY: "Yearly",
 };
 
-export default function TransactionTable({transactions, accountId, balance, onDelete,dateRange}) {
+export default function TransactionTable({transactions, accountId, balance, onDelete, dateRange, customDateRange}) {
   const navigate = useNavigate();
 
   const [selectedIds, setSelectedIds] = useState([]);
@@ -98,7 +99,15 @@ export default function TransactionTable({transactions, accountId, balance, onDe
   const filteredAndSortedTransactions = useMemo(() => {
     let result = [...transactionsWithBalance];
 
-    if (dateRange && DATE_RANGES[dateRange]) {
+    if (dateRange === "CUSTOM" && customDateRange?.from && customDateRange?.to) {
+      const startDate = startOfDay(customDateRange.from);
+      const endDate = endOfDay(customDateRange.to);
+      result = result.filter(
+        (transaction) =>
+          new Date(transaction.date) >= startDate &&
+          new Date(transaction.date) <= endDate
+      );
+    } else if (dateRange && DATE_RANGES[dateRange] && dateRange !== "CUSTOM") {
       const range = DATE_RANGES[dateRange];
       const now = new Date();
       const startDate = range.days
@@ -148,7 +157,7 @@ export default function TransactionTable({transactions, accountId, balance, onDe
     });
 
     return result;
-  }, [transactionsWithBalance, searchTerm, typeFilter, recurringFilter, sortConfig, dateRange]);
+  }, [transactionsWithBalance, searchTerm, typeFilter, recurringFilter, sortConfig, dateRange, customDateRange]);
 
   const totalPages = Math.ceil(filteredAndSortedTransactions.length / ITEMS_PER_PAGE);
 
@@ -219,6 +228,42 @@ export default function TransactionTable({transactions, accountId, balance, onDe
   const handlePageChange = (newPage) => {
     setCurrentPage(newPage);
     setSelectedIds([]);
+  };
+
+  const handleExport = () => {
+    const headers = ["Date", "Description", "Category", "Type", "Amount", "Balance", "Recurring"];
+    
+    const csvContent = [
+      headers.join(","),
+      ...filteredAndSortedTransactions.map(t => {
+        const date = format(new Date(t.date), "PP");
+        const amount = t.amount.toFixed(2);
+        const balance = t.runningBalance.toFixed(2);
+        const recurring = t.isRecurring ? RECURRING_INTERVALS[t.recurringInterval] : "One-time";
+        // Escape quotes and commas in description
+        const desc = `"${t.description?.replace(/"/g, '""') || ''}"`;
+        
+        return [
+          date,
+          desc,
+          t.category,
+          t.type,
+          amount,
+          balance,
+          recurring
+        ].join(",");
+      })
+    ].join("\n");
+
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement("a");
+    const url = URL.createObjectURL(blob);
+    link.setAttribute("href", url);
+    link.setAttribute("download", "transactions_report.csv");
+    link.style.visibility = 'hidden';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
   };
 
   return (
@@ -292,6 +337,16 @@ export default function TransactionTable({transactions, accountId, balance, onDe
               <X className="h-4 w-4" />
             </Button>
           )}
+
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={handleExport}
+            title="Export CSV"
+          >
+            <Download className="h-4 w-4 mr-2" />
+            Export
+          </Button>
         </div>
       </div>
 

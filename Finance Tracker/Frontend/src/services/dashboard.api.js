@@ -24,3 +24,12 @@ export const getUserAccounts = async (token) => {
   });
   return res.data;
 };
+
+export const getDashboardData = async (token) => {
+  const res = await api.get("/dashboard", {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  return res.data;
+};

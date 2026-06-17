@@ -13,6 +13,8 @@ import {
   X,
   ChevronLeft,
   ChevronRight,
+  ChevronsLeft,
+  ChevronsRight,
   RefreshCw,
   Clock,
   Download,
@@ -331,6 +333,7 @@ export default function TransactionTable({transactions, accountId, balance, onDe
             <Button
               variant="outline"
               size="icon"
+              className="cursor-pointer"
               onClick={handleClearFilters}
               title="Clear filters"
             >
@@ -341,6 +344,7 @@ export default function TransactionTable({transactions, accountId, balance, onDe
           <Button
             variant="outline"
             size="sm"
+            className="cursor-pointer"
             onClick={handleExport}
             title="Export CSV"
           >
@@ -548,25 +552,71 @@ export default function TransactionTable({transactions, accountId, balance, onDe
 
       {/* Pagination */}
       {totalPages > 1 && (
-        <div className="flex items-center justify-center gap-2">
+        <div className="flex items-center justify-center gap-1 mt-6">
           <Button
-            variant="outline"
+            variant="ghost"
+            size="icon"
+            onClick={() => handlePageChange(1)}
+            disabled={currentPage === 1}
+            className="text-muted-foreground hover:text-primary cursor-pointer"
+          >
+            <ChevronsLeft className="h-4 w-4" />
+          </Button>
+          <Button
+            variant="ghost"
             size="icon"
             onClick={() => handlePageChange(currentPage - 1)}
             disabled={currentPage === 1}
+            className="text-muted-foreground hover:text-primary cursor-pointer"
           >
             <ChevronLeft className="h-4 w-4" />
           </Button>
-          <span className="text-sm">
-            Page {currentPage} of {totalPages}
-          </span>
+
+          <div className="relative flex items-center gap-1 max-w-[60vw] md:max-w-[400px] overflow-x-auto scroll-smooth [&::-webkit-scrollbar]:hidden px-1">
+            {/* Sliding Background */}
+            <div 
+              className="absolute left-1 top-0 h-8 w-8 bg-blue-500 rounded-full transition-transform duration-500 ease-in-out pointer-events-none z-0"
+              style={{
+                transform: `translateX(${(currentPage - 1) * 36}px)`
+              }}
+            />
+
+            {Array.from({ length: totalPages }, (_, i) => {
+              const pageNum = i + 1;
+              return (
+                <Button
+                  key={pageNum}
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => handlePageChange(pageNum)}
+                  className={cn(
+                    "h-8 w-8 min-w-8 rounded-full font-medium z-10 transition-colors duration-300 cursor-pointer",
+                    currentPage === pageNum ? "text-white hover:text-white hover:bg-transparent" : "text-muted-foreground hover:text-primary"
+                  )}
+                >
+                  {pageNum}
+                </Button>
+              );
+            })}
+          </div>
+
           <Button
-            variant="outline"
+            variant="ghost"
             size="icon"
             onClick={() => handlePageChange(currentPage + 1)}
             disabled={currentPage === totalPages}
+            className="text-muted-foreground hover:text-primary cursor-pointer"
           >
             <ChevronRight className="h-4 w-4" />
+          </Button>
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => handlePageChange(totalPages)}
+            disabled={currentPage === totalPages}
+            className="text-muted-foreground hover:text-primary cursor-pointer"
+          >
+            <ChevronsRight className="h-4 w-4" />
           </Button>
         </div>
       )}

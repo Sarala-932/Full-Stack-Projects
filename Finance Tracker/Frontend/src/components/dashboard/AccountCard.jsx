@@ -53,7 +53,7 @@ function AccountCard({account, onUpdate, onOptimisticUpdate}) {
   }, [error]);
 
   return (
-    <Card className="hover:shadow-md transition-shadow group relative">
+    <Card className="hover:shadow-md transition-shadow group relative border-muted hover:border-primary/50 overflow-hidden">
       <Link to={`/accounts/${account._id}`}>
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
           <CardTitle className="text-sm font-medium capitalize">

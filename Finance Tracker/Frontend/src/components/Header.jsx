@@ -12,7 +12,7 @@ export default function Header() {
   const createTransactionLink = currentAccountId ? `/transaction/create?accountId=${currentAccountId}` : "/transaction/create";
 
   return (
-    <div className="fixed top-0 w-full bg-white/80 backdrop-blur-md z-50 border-b">
+    <div className="fixed top-0 w-full bg-white/80 backdrop-blur-md z-50 border-b pr-0! mr-0!">
       <nav className="container mx-auto px-4 py-4 flex items-center justify-between">
         <Link to="/">
           <img
@@ -26,29 +26,14 @@ export default function Header() {
 
         <div className="flex items-center space-x-4">
           <Show when="signed-in">
-            <Link
-              to="/dashboard"
-              className="text-gray-600 hover:text-blue-600 flex items-center gap-2"
-            >
-              <Button variant="outline">
-                <LayoutDashboard size={18} />
-                <span className="hidden md:inline cursor-pointer">Dashboard</span>
-              </Button>
-            </Link>
-
-            <Link to={createTransactionLink}>
-              <Button className="flex items-center gap-2">
-                <PenBox size={18} />
-                <span className="hidden md:inline cursor-pointer">Add Transaction</span>
-              </Button>
-            </Link>
+            {/* The Dashboard and Add Transaction buttons have been moved to the sidebar and dashboard layout */}
           </Show>
 
           <Show when="signed-out">
             {!isSignInPage && (
-              <Button variant="outline">
-                <Link to="/sign-in">Login</Link>
-              </Button>
+              <Link to="/sign-in">
+                <Button variant="outline">Login</Button>
+              </Link>
             )}
           </Show>
 

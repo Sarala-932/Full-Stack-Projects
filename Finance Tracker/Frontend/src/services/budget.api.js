@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const api = axios.create({
-  baseURL: "http://localhost:8000",
+  baseURL: import.meta.env.VITE_API_URL || "http://localhost:8000",
 });
 
 export const getCurrentBudget = async (token, accountId) => {
@@ -11,10 +11,10 @@ export const getCurrentBudget = async (token, accountId) => {
   return res.data;
 };
 
-export const updateBudget = async (token, amount) => {
+export const updateBudget = async (token, { amount, accountId, categoryLimits }) => {
   const res = await api.post(
     "/update",
-    {amount},
+    { amount, accountId, categoryLimits },
     {
       headers: {Authorization: `Bearer ${token}`},
     },

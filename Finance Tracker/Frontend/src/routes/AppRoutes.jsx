@@ -3,6 +3,7 @@ import {useAuth as useClerkAuth} from "@clerk/react";
 import {BarLoader} from "react-spinners";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
+import AppLayout from "../components/layout/AppLayout";
 
 // Pages
 import Home from "../pages/Home";
@@ -11,6 +12,10 @@ import SignUp from "../pages/SignUp";
 import NotFound from "../pages/NotFound";
 import Dashboard from "../pages/Dashboard";
 import Account from "../pages/Account";
+import AccountsList from "../pages/AccountsList";
+import TransactionsPage from "../pages/TransactionsPage";
+import BudgetPage from "../pages/BudgetPage";
+import ReportsPage from "../pages/ReportsPage";
 import AddTransaction from "../pages/AddTransaction";
 
 const ProtectedRoute = ({children}) => {
@@ -21,19 +26,18 @@ const ProtectedRoute = ({children}) => {
         <BarLoader color="#9333ea" width={200} />
       </div>
     );
-  if (!isSignedIn) return <Navigate to="/sign-in" replace />;
+  if (!isSignedIn) return <Navigate to="/" replace />;
   return children;
 };
 
 export default function AppRoutes() {
   const location = useLocation();
-  const hideFooterPaths = ["/transaction/create"];
-  const shouldShowFooter = !hideFooterPaths.includes(location.pathname);
+  const shouldShowFooter = location.pathname === "/" || location.pathname.startsWith("/sign");
 
   return (
     <div className="flex flex-col min-h-screen">
       <Header />
-      <main className="grow">
+      <main className="grow pb-12">
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/sign-in/*" element={<SignIn />} />
@@ -43,7 +47,49 @@ export default function AppRoutes() {
             path="/dashboard"
             element={
               <ProtectedRoute>
-                <Dashboard />
+                <AppLayout>
+                  <Dashboard />
+                </AppLayout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/accounts"
+            element={
+              <ProtectedRoute>
+                <AppLayout>
+                  <AccountsList />
+                </AppLayout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/transactions"
+            element={
+              <ProtectedRoute>
+                <AppLayout>
+                  <TransactionsPage />
+                </AppLayout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/budget"
+            element={
+              <ProtectedRoute>
+                <AppLayout>
+                  <BudgetPage />
+                </AppLayout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/reports"
+            element={
+              <ProtectedRoute>
+                <AppLayout>
+                  <ReportsPage />
+                </AppLayout>
               </ProtectedRoute>
             }
           />
@@ -51,7 +97,9 @@ export default function AppRoutes() {
             path="/accounts/:id"
             element={
               <ProtectedRoute>
-                <Account />
+                <AppLayout>
+                  <Account />
+                </AppLayout>
               </ProtectedRoute>
             }
           />
@@ -60,7 +108,9 @@ export default function AppRoutes() {
             path="/transaction/create"
             element={
               <ProtectedRoute>
-                <AddTransaction />
+                <AppLayout>
+                  <AddTransaction />
+                </AppLayout>
               </ProtectedRoute>
             }
           />

@@ -55,25 +55,25 @@ function Account() {
   }
 
   return (
-    <div className="space-y-8 px-5 pt-25">
-      <div className="flex gap-4 items-end justify-between">
+    <div className="space-y-8 px-6 py-4">
+      <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-end justify-between">
         {/* Account Name and Type */}
-        <div className="ml-20">
-          <h1 className="text-5xl sm:text-6xl font-bold capitalize gradient-title">
+        <div>
+          <h1 className="text-4xl sm:text-5xl font-bold tracking-tight capitalize gradient-title">
             {account.name}
           </h1>
-          <p className="text-muted-foreground">
+          <p className="text-muted-foreground mt-2 text-sm sm:text-base">
             {account.type.charAt(0) + account.type.slice(1).toLowerCase()} Account
+            {account.bankName && ` • ${account.bankName}`}
           </p>
-          <p className="text-muted-foreground text-sm">{account.bankName}</p>
         </div>
 
         {/* Balance and Transaction Count */}
-        <div className="text-right mr-20 pb-2">
-          <div className="text-xl sm:text-2xl font-bold">
+        <div className="text-left sm:text-right pb-1">
+          <div className="text-3xl sm:text-4xl font-bold">
             ₹{parseFloat(account.balance).toFixed(2)}
           </div>
-          <p className="text-sm text-muted-foreground">
+          <p className="text-sm text-muted-foreground mt-1">
             {account.transactionCount} Transactions
           </p>
         </div>

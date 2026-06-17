@@ -32,9 +32,9 @@ const AddTransaction = () => {
     }, [editId]);
 
     return (
-        <div className="max-w-3xl mx-auto px-5 pt-30 pb-32">
-            <div className="flex justify-center md:justify-normal mb-8">
-                <h1 className="text-5xl gradient-title">
+        <div className="max-w-2xl mx-auto px-6 py-8">
+            <div className="mb-6">
+                <h1 className="text-3xl font-bold tracking-tight gradient-title">
                     {editId ? "Edit Transaction" : "Add Transaction"}
                 </h1>
             </div>

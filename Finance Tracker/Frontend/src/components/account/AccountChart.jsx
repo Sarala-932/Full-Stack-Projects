@@ -88,7 +88,7 @@ function AccountChart({transactions, dateRange, onDateRangeChange, customDateRan
   return (
     <Card>
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">
-        <CardTitle className="text-base font-normal">Transaction Overview</CardTitle>
+        <CardTitle className="text-lg font-semibold">Transaction Overview</CardTitle>
         <div className="flex items-center gap-2">
           <Select defaultValue={dateRange} onValueChange={onDateRangeChange}>
             <SelectTrigger className="w-[140px]">
@@ -187,14 +187,15 @@ function AccountChart({transactions, dateRange, onDateRangeChange, customDateRan
                 axisLine={false}
                 tickFormatter={(value) => `₹${value}`}
               />
-              <Tooltip formatter={(value) => [`₹${value}`, undefined]} />
+              <Tooltip formatter={(value) => [`₹${value}`, undefined]} cursor={{fill: 'transparent'}} />
               <Legend />
-              <Bar dataKey="income" name="Income" fill="#22c55e" radius={[4, 4, 0, 0]} />
+              <Bar dataKey="income" name="Income" fill="#22c55e" radius={[4, 4, 0, 0]} maxBarSize={40} />
               <Bar
                 dataKey="expense"
                 name="Expense"
                 fill="#ef4444"
                 radius={[4, 4, 0, 0]}
+                maxBarSize={40}
               />
             </BarChart>
           </ResponsiveContainer>

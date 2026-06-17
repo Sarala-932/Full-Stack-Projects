@@ -40,8 +40,8 @@ app.get("/api/preview-email", (req, res) => {
             percentageUsed: 85.5,
             budgetAmount: 1000,
             totalExpenses: 855,
-            accountName: "Main Bank Account"
-        }
+            accountName: "Main Bank Account",
+        },
     });
     res.send(html);
 });

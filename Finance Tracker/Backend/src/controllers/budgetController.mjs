@@ -23,15 +23,14 @@ const getCurrentBudget = async (req, res) => {
     }
     const accountObjectId = new mongoose.Types.ObjectId(accountId);
     // get budget for this user
-    const budget = await budgetModel.findOne({userId: user._id}).lean();
+    const budget = await budgetModel.findOne({userId: user._id, accountId: accountObjectId}).lean();
 
     // get current month start and end
     const currentDate = new Date();
-    const testMonth = 3;
-    const startOfMonth = new Date(currentDate.getFullYear(), testMonth, 1);
+    const startOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
     const endOfMonth = new Date(
       currentDate.getFullYear(),
-      testMonth + 1,
+      currentDate.getMonth() + 1,
       0,
       23,
       59,
@@ -54,19 +53,27 @@ const getCurrentBudget = async (req, res) => {
       },
       {
         $group: {
-          _id: null,
+          _id: "$category",
           totalExpenses: {$sum: "$amount"},
         },
       },
     ]);
 
-    const currentExpenses = expenses.length > 0 ? expenses[0].totalExpenses : 0;
+    let currentExpenses = 0;
+    const categoryExpenses = {};
+    
+    expenses.forEach(exp => {
+      const cat = exp._id || "other";
+      currentExpenses += exp.totalExpenses;
+      categoryExpenses[cat] = exp.totalExpenses;
+    });
 
     return res.status(200).json({
       success: true,
       data: {
         budget: budget || null,
         currentExpenses,
+        categoryExpenses,
       },
     });
   } catch (error) {
@@ -88,17 +95,27 @@ const updateBudget = async (req, res) => {
       return res.status(404).json({success: false, message: "User not found"});
     }
 
-    const {amount} = req.body;
+    const {amount, accountId, categoryLimits} = req.body;
+
+    if (!accountId || !mongoose.Types.ObjectId.isValid(accountId)) {
+      return res.status(400).json({success: false, message: "Invalid account id"});
+    }
 
     if (!amount || isNaN(amount)) {
       return res.status(400).json({success: false, message: "Invalid amount"});
     }
 
+    const accountObjectId = new mongoose.Types.ObjectId(accountId);
+
     // ✅ upsert → update if exists, create if not
     const budget = await budgetModel
       .findOneAndUpdate(
-        {userId: user._id},
-        {amount: parseFloat(amount), lastAlertSent: null},
+        {userId: user._id, accountId: accountObjectId},
+        {
+          amount: parseFloat(amount),
+          categoryLimits: categoryLimits || [],
+          lastAlertSent: null
+        },
         {new: true, upsert: true},
       )
       .lean();

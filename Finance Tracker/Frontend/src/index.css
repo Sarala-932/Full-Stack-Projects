@@ -5,7 +5,7 @@
 
 @layer base {
   .gradient-title {
-    @apply bg-gradient-to-br from-blue-700 via-blue-800 to-cyan-600 bg-clip-text text-transparent;
+    @apply bg-linear-to-br from-blue-700 via-blue-800 to-cyan-600 bg-clip-text text-transparent;
   }
 }
 
@@ -129,9 +129,16 @@
   }
   body {
     @apply bg-background text-foreground;
+    overflow-x: hidden;
+    overflow-y: scroll !important;
+  }
+  body[data-scroll-locked], [data-scroll-locked] {
+    padding-right: 0 !important;
+    margin-right: 0 !important;
   }
   html {
     @apply font-sans;
+    scrollbar-gutter: stable;
   }
 }
 @layer utilities {

@@ -44,6 +44,7 @@ function AddTransactionForm({accounts, categories, editMode = false, initialData
     const navigate = useNavigate();
     const [searchParams] = useSearchParams();
     const accountIdParam = searchParams.get("accountId");
+    const [submitAction, setSubmitAction] = useState("save");
 
     const defaultAccountId = accountIdParam || accounts.find((ac) => ac.isDefault)?._id;
 
@@ -121,10 +122,25 @@ function AddTransactionForm({accounts, categories, editMode = false, initialData
     useEffect(() => {
         if (transactionResult?.success && !transactionLoading) {
             toast.success(editMode ? "Transaction updated successfully" : "Transaction created successfully");
-            reset();
-            navigate(`/accounts/${transactionResult.data.accountId}`);
+
+            if (submitAction === "save-new") {
+                // Keep the same account and date, reset the rest
+                const currentAccountId = getValues("accountId");
+                const currentDate = getValues("date");
+                reset({
+                    type: "EXPENSE",
+                    amount: "",
+                    description: "",
+                    accountId: currentAccountId,
+                    date: currentDate,
+                    isRecurring: false,
+                });
+            } else {
+                reset();
+                navigate(`/accounts/${transactionResult.data.accountId}`);
+            }
         }
-    }, [transactionResult, transactionLoading, editMode, navigate, reset]);
+    }, [transactionResult, transactionLoading, editMode, navigate, reset, submitAction, getValues]);
 
     const handleScanComplete = (scannedData) => {
         // console.log("scannedData",scannedData);
@@ -142,7 +158,7 @@ function AddTransactionForm({accounts, categories, editMode = false, initialData
     };
 
     return (
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-6 pb-20">
             {/* Ai Receipt scanner */}
             <ReceiptScanner onScanComplete={handleScanComplete} />
 
@@ -285,6 +301,7 @@ function AddTransactionForm({accounts, categories, editMode = false, initialData
                 <Switch
                     checked={isRecurring}
                     onCheckedChange={(checked) => setValue("isRecurring", checked)}
+                    className="cursor-pointer"
                 />
             </div>
 
@@ -312,23 +329,46 @@ function AddTransactionForm({accounts, categories, editMode = false, initialData
                 </div>
             )}
 
-            {/* Actions */}
-            <div className="flex flex-col gap-4 sm:flex-row">
-                <Button type="button" variant="outline" className="flex-1" onClick={() => navigate(-1)}>
-                    Cancel
-                </Button>
-                <Button type="submit" className="flex-1" disabled={transactionLoading}>
-                    {transactionLoading ? (
-                        <>
-                            <Loader2 className="mr-2 h-4 w-4 animate-spin inline" />
-                            {editMode ? "Updating..." : "Creating..."}
-                        </>
-                    ) : editMode ? (
-                        "Update Transaction"
-                    ) : (
-                        "Create Transaction"
+            {/* Fixed Footer Actions */}
+            <div className="fixed bottom-0 left-0 right-0 bg-white border-t p-6 shadow-[0_-2px_10px_rgba(0,0,0,0.05)] z-50">
+                <div className="max-w-3xl mx-auto flex flex-col gap-4 sm:flex-row">
+                    <Button type="button" variant="outline" className="flex-1 py-6 cursor-pointer" onClick={() => navigate(-1)}>
+                        Cancel
+                    </Button>
+                    
+                    {!editMode && (
+                        <Button
+                            type="submit"
+                            variant="secondary"
+                            className="flex-1 py-6 cursor-pointer" 
+                            disabled={transactionLoading}
+                            onClick={() => setSubmitAction("save-new")}
+                        >
+                            {transactionLoading && submitAction === "save-new" ? (
+                                <Loader2 className="mr-2 h-4 w-4 animate-spin inline" />
+                            ) : null}
+                            Save and New
+                        </Button>
                     )}
-                </Button>
+            
+                    <Button
+                        type="submit"
+                        className="flex-1 py-6 cursor-pointer bg-blue-600 hover:bg-blue-700 text-white" 
+                        disabled={transactionLoading}
+                        onClick={() => setSubmitAction("save")}
+                    >
+                        {transactionLoading && submitAction === "save" ? (
+                            <>
+                                <Loader2 className="mr-2 h-4 w-4 animate-spin inline" />
+                                {editMode ? "Updating..." : "Saving..."}
+                            </>
+                        ) : editMode ? (
+                            "Update Transaction"
+                        ) : (
+                            "Save Transaction"
+                        )}
+                    </Button>
+                </div>
             </div>
         </form>
     );

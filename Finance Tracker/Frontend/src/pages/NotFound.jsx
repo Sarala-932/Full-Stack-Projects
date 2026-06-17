@@ -1,7 +1,9 @@
 import {Link} from "react-router";
 import {Button} from "@/components/ui/button";
+import {useAuth} from "@clerk/react";
 
 function NotFound() {
+    const { isSignedIn } = useAuth();
     return (
         <div className="flex flex-col items-center justify-center min-h-screen px-4 text-center">
             <h1 className="text-6xl font-bold gradient-title mb-4">404</h1>
@@ -9,9 +11,15 @@ function NotFound() {
             <p className="text-gray-600 mb-8">
                 Oops! The page you&apos;re looking for doesn&apos;t exist or has been moved.
             </p>
-            <Link to="/">
-                <Button className="cursor-pointer">Return Home</Button>
-            </Link>
+            {isSignedIn ? (
+                <Link to="/dashboard">
+                    <Button className="cursor-pointer">Return to Dashboard</Button>
+                </Link>
+            ) : (
+                <Link to="/">
+                    <Button className="cursor-pointer">Return Home</Button>
+                </Link>
+            )}
         </div>
     );
 }

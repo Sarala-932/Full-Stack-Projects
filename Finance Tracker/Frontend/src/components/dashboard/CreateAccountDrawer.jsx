@@ -96,8 +96,9 @@ export default function CreateAccountDrawer({open, onClose, onSuccess, children}
       toast.success("Account created successfully");
       if (onSuccess) onSuccess(); // refresh dashboard
       if (onClose) onClose(); // close drawer
+      setData(undefined); // Clear state to prevent duplicate toasts
     }
-  }, [newAccount, onSuccess, onClose]);
+  }, [newAccount]);
 
   // ✅ On error
   useEffect(() => {

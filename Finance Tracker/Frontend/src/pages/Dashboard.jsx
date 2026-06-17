@@ -1,6 +1,6 @@
 import {useEffect, useState, useMemo} from "react";
 import { useUser } from "@clerk/react";
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
 import CreateAccountDrawer from "../components/dashboard/CreateAccountDrawer";
 import {Card, CardContent, CardHeader, CardTitle} from "@/components/ui/card";
 import {Button} from "@/components/ui/button";
@@ -15,6 +15,7 @@ import { cn } from "@/lib/utils";
 
 function Dashboard() {
   const { user } = useUser();
+  const navigate = useNavigate();
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
   const {
@@ -243,7 +244,7 @@ function Dashboard() {
       <CreateAccountDrawer
         open={isDrawerOpen}
         onClose={() => setIsDrawerOpen(false)}
-        onSuccess={() => fetchAccounts()}
+        onSuccess={() => navigate("/accounts")}
       />
     </div>
   );

@@ -6,6 +6,8 @@ import {
     getAccountWithTransactions,
     updateDefaultAccount,
     bulkDeleteTransactions,
+    updateAccount,
+    deleteAccount,
 } from "./controllers/accountController.mjs";
 import {getCurrentBudget, updateBudget} from "./controllers/budgetController.mjs";
 import {
@@ -44,6 +46,12 @@ router.get("/account/:accountId", authenticate, getAccountWithTransactions);
 
 // delete transactions
 router.delete("/account/:accountId/bulk-delete", authenticate, bulkDeleteTransactions);
+
+// update account details
+router.put("/account/:accountId", authenticate, updateAccount);
+
+// delete account
+router.delete("/account/:accountId", authenticate, deleteAccount);
 
 // get current budget
 router.get("/:accountId/budget", authenticate, getCurrentBudget);

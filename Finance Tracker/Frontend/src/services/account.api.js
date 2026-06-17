@@ -35,3 +35,21 @@ export const bulkDeleteTransactions = async (token, accountId, transactionIds) =
   });
   return res.data;
 };
+
+export const updateAccount = async (token, accountId, data) => {
+  const res = await api.put(`/account/${accountId}`, data, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  return res.data;
+};
+
+export const deleteAccount = async (token, accountId) => {
+  const res = await api.delete(`/account/${accountId}`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  return res.data;
+};

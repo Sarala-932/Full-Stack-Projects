@@ -172,4 +172,105 @@ const bulkDeleteTransactions = async (req, res) => {
   }
 };
 
-export {updateDefaultAccount, getAccountWithTransactions, bulkDeleteTransactions};
+const updateAccount = async (req, res) => {
+  try {
+    const clerkUserId = req.userId;
+    if (!clerkUserId) {
+      return res.status(401).send({message: "Unauthorized"});
+    }
+
+    const user = await userModel.findOne({clerkUserId}).select("_id").lean();
+    if (!user) {
+      return res.status(404).send({message: "User not found"});
+    }
+
+    const {accountId} = req.params;
+    const {balance, name} = req.body;
+
+    const account = await accountModel.findOne({
+      _id: accountId,
+      userId: user._id,
+    });
+
+    if (!account) {
+      return res.status(404).json({success: false, message: "Account not found"});
+    }
+
+    const updateFields = {};
+    if (balance !== undefined) {
+      const balanceFloat = parseFloat(balance);
+      if (isNaN(balanceFloat)) {
+        return res.status(400).send({success: false, message: "Invalid balance amount"});
+      }
+      updateFields.balance = balanceFloat;
+    }
+    if (name) {
+      updateFields.name = name;
+    }
+
+    const updatedAccount = await accountModel.findByIdAndUpdate(
+      accountId,
+      {$set: updateFields},
+      {new: true}
+    );
+
+    return res.status(200).send({
+      success: true,
+      data: updatedAccount,
+      message: "Account updated successfully",
+    });
+  } catch (error) {
+    return res.status(500).send({success: false, message: error.message});
+  }
+};
+
+const deleteAccount = async (req, res) => {
+  try {
+    const clerkUserId = req.userId;
+    if (!clerkUserId) {
+      return res.status(401).send({message: "Unauthorized"});
+    }
+
+    const user = await userModel.findOne({clerkUserId}).select("_id").lean();
+    if (!user) {
+      return res.status(404).send({message: "User not found"});
+    }
+
+    const {accountId} = req.params;
+
+    const account = await accountModel.findOne({
+      _id: accountId,
+      userId: user._id,
+    });
+
+    if (!account) {
+      return res.status(404).json({success: false, message: "Account not found"});
+    }
+
+    // Delete all transactions associated with this account
+    await transactionModel.deleteMany({
+      accountId: accountId,
+      userId: user._id,
+    });
+
+    // Delete the account
+    await accountModel.findByIdAndDelete(accountId);
+
+    // If it was the default account, make the most recently created account the new default
+    if (account.isDefault) {
+      const latestAccount = await accountModel.findOne({userId: user._id}).sort({createdAt: -1});
+      if (latestAccount) {
+        await accountModel.findByIdAndUpdate(latestAccount._id, {$set: {isDefault: true}});
+      }
+    }
+
+    return res.status(200).send({
+      success: true,
+      message: "Account and associated transactions deleted successfully",
+    });
+  } catch (error) {
+    return res.status(500).send({success: false, message: error.message});
+  }
+};
+
+export {updateDefaultAccount, getAccountWithTransactions, bulkDeleteTransactions, updateAccount, deleteAccount};

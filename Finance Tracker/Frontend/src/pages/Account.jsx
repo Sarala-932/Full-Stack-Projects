@@ -7,6 +7,7 @@ import useFetch from "../hooks/useFetch";
 import {getAccountWithTransactions} from "../services/account.api";
 import NotFound from "./NotFound";
 import AccountChart from "@/components/account/AccountChart";
+import AccountSettings from "@/components/account/AccountSettings";
 
 function Account() {
   const {id: accountId} = useParams();
@@ -68,14 +69,22 @@ function Account() {
           </p>
         </div>
 
-        {/* Balance and Transaction Count */}
-        <div className="text-left sm:text-right pb-1">
-          <div className="text-3xl sm:text-4xl font-bold">
-            ₹{parseFloat(account.balance).toFixed(2)}
+        {/* Balance and Settings */}
+        <div className="flex flex-col items-start sm:items-end pb-1 gap-2">
+          <div className="text-left sm:text-right">
+            <div className="text-3xl sm:text-4xl font-bold flex items-center justify-start sm:justify-end gap-2">
+              ₹{parseFloat(account.balance).toFixed(2)}
+              <div className="mt-1">
+                <AccountSettings 
+                  account={account} 
+                  onUpdate={() => fetchAccount(accountId)} 
+                />
+              </div>
+            </div>
+            <p className="text-sm text-muted-foreground mt-1">
+              {account.transactionCount} Transactions
+            </p>
           </div>
-          <p className="text-sm text-muted-foreground mt-1">
-            {account.transactionCount} Transactions
-          </p>
         </div>
       </div>
 

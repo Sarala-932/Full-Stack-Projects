@@ -73,14 +73,14 @@ export default function TransactionsPage() {
           {transactionsLoading && !transactions ? (
             <div className="flex justify-center p-8 text-muted-foreground">Loading transactions...</div>
           ) : (
-            <TransactionTable transactions={filteredTransactions} />
+            <TransactionTable transactions={filteredTransactions} onDelete={fetchTransactions} />
           )}
         </TabsContent>
         <TabsContent value="recurring" className="mt-6">
           {transactionsLoading && !transactions ? (
             <div className="flex justify-center p-8 text-muted-foreground">Loading transactions...</div>
           ) : recurringTransactions.length > 0 ? (
-            <TransactionTable transactions={recurringTransactions} />
+            <TransactionTable transactions={recurringTransactions} onDelete={fetchTransactions} />
           ) : (
             <div className="flex flex-col items-center justify-center p-12 text-center border rounded-lg bg-card text-muted-foreground">
               <p>No recurring transactions found.</p>

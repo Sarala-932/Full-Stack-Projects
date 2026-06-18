@@ -1,7 +1,7 @@
 import useFetch from "@/hooks/useFetch";
 import {zodResolver} from "@hookform/resolvers/zod";
 import {useEffect, useState, useRef} from "react";
-import {useForm} from "react-hook-form";
+import {useForm, Controller} from "react-hook-form";
 import {useNavigate, useSearchParams} from "react-router";
 import {z} from "zod";
 import {createTransaction, updateTransaction} from "@/services/transaction.api";
@@ -56,6 +56,7 @@ function AddTransactionForm({accounts, categories, editMode = false, initialData
         setValue,
         getValues,
         reset,
+        control,
     } = useForm({
         resolver: zodResolver(transactionSchema),
         defaultValues:
@@ -84,6 +85,7 @@ function AddTransactionForm({accounts, categories, editMode = false, initialData
     const isRecurring = watch("isRecurring");
     const date = watch("date");
     const category = watch("category");
+    const recurringInterval = watch("recurringInterval");
     const [isDatePickerOpen, setIsDatePickerOpen] = useState(false);
 
     const [inputValue, setInputValue] = useState("");
@@ -137,7 +139,11 @@ function AddTransactionForm({accounts, categories, editMode = false, initialData
                 });
             } else {
                 reset();
-                navigate(`/accounts/${transactionResult.data.accountId}`);
+                if (editMode) {
+                    navigate(-1);
+                } else {
+                    navigate(`/accounts/${transactionResult.data.accountId}`);
+                }
             }
         }
     }, [transactionResult, transactionLoading, editMode, navigate, reset, submitAction, getValues]);
@@ -309,20 +315,23 @@ function AddTransactionForm({accounts, categories, editMode = false, initialData
             {isRecurring && (
                 <div className="space-y-2">
                     <label className="text-sm font-medium">Recurring Interval</label>
-                    <Select
-                        onValueChange={(value) => setValue("recurringInterval", value)}
-                        defaultValue={getValues("recurringInterval")}
-                    >
-                        <SelectTrigger>
-                            <SelectValue placeholder="Select interval" />
-                        </SelectTrigger>
-                        <SelectContent>
-                            <SelectItem value="DAILY">Daily</SelectItem>
-                            <SelectItem value="WEEKLY">Weekly</SelectItem>
-                            <SelectItem value="MONTHLY">Monthly</SelectItem>
-                            <SelectItem value="YEARLY">Yearly</SelectItem>
-                        </SelectContent>
-                    </Select>
+                    <Controller
+                        name="recurringInterval"
+                        control={control}
+                        render={({field}) => (
+                            <Select onValueChange={field.onChange} value={field.value || undefined}>
+                                <SelectTrigger>
+                                    <SelectValue placeholder="Select interval" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    <SelectItem value="DAILY">Daily</SelectItem>
+                                    <SelectItem value="WEEKLY">Weekly</SelectItem>
+                                    <SelectItem value="MONTHLY">Monthly</SelectItem>
+                                    <SelectItem value="YEARLY">Yearly</SelectItem>
+                                </SelectContent>
+                            </Select>
+                        )}
+                    />
                     {errors.recurringInterval && (
                         <p className="text-sm text-red-500">{errors.recurringInterval.message}</p>
                     )}

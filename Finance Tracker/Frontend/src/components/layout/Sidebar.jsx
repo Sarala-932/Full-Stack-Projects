@@ -15,7 +15,8 @@ export default function Sidebar() {
   const location = useLocation();
 
   return (
-    <div className="w-64 border-r min-h-[calc(100vh-80px)] bg-card text-card-foreground p-4 hidden md:block">
+    <>
+      <div className="w-60 border-r h-[calc(100vh-80px)] fixed top-20 bg-card text-card-foreground p-4 pr-3 hidden md:block z-10">
       <nav className="space-y-2">
         {items.map((item) => {
           const isActive = location.pathname.startsWith(item.url);
@@ -24,7 +25,7 @@ export default function Sidebar() {
               key={item.title}
               to={item.url}
               className={cn(
-                "flex items-center gap-3 rounded-lg px-4 py-3 text-base font-medium transition-all hover:bg-accent hover:text-accent-foreground",
+                "flex items-center gap-3 rounded-lg px-4 py-3 text-base font-medium transition-colors hover:bg-accent hover:text-accent-foreground",
                 isActive ? "bg-blue-500 text-white shadow-md hover:bg-blue-600 hover:text-white" : "text-slate-800 dark:text-slate-200"
               )}
             >
@@ -34,6 +35,8 @@ export default function Sidebar() {
           );
         })}
       </nav>
-    </div>
+      </div>
+      <div className="w-60 hidden md:block shrink-0" />
+    </>
   );
 }

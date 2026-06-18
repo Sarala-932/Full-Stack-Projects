@@ -62,7 +62,7 @@ export default function ExpensePieChart({ transactions }) {
           </p>
         ) : (
           <div className="h-[300px]">
-            <ResponsiveContainer width="100%" height="100%">
+            <ResponsiveContainer width="99%" height="100%">
               <PieChart>
                 <Pie
                   data={pieChartData}

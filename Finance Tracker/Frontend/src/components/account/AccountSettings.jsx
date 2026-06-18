@@ -56,10 +56,12 @@ export default function AccountSettings({account, onUpdate}) {
     try {
       await updateAccountFn(account._id, {balance: balanceInput});
       toast.success("Account balance updated successfully");
-      setIsEditOpen(false);
       if (onUpdate) onUpdate();
     } catch (error) {
-      toast.error(error.message || "Failed to update balance");
+      // Error is already toasted by useFetch
+      console.error(error);
+    } finally {
+      setIsEditOpen(false);
     }
   };
 
@@ -67,10 +69,12 @@ export default function AccountSettings({account, onUpdate}) {
     try {
       await deleteAccountFn(account._id);
       toast.success("Account deleted successfully");
-      setIsDeleteOpen(false);
       navigate("/accounts");
     } catch (error) {
-      toast.error(error.message || "Failed to delete account");
+      // Error is already toasted by useFetch
+      console.error(error);
+    } finally {
+      setIsDeleteOpen(false);
     }
   };
 

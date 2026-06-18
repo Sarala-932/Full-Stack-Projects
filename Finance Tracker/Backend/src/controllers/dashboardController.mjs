@@ -14,13 +14,6 @@ const createAccount = async (req, res) => {
             return res.status(404).send({message: "User not found"});
         }
 
-        // for testing
-        // const user = await userModel.findById("69e511c4f568ca7dc4563289");
-
-        // if (!user) {
-        //     return res.status(404).send({message: "User not found"});
-        // }
-
         const data = req.body;
 
         if (!data.accountNumber) {
@@ -35,7 +28,8 @@ const createAccount = async (req, res) => {
         if (!data.type) {
             return res.status(400).send({message: "Account type is required"});
         }
-        if (!data.balance) {
+      
+        if (data.balance === undefined || data.balance === null || data.balance === "") {
             return res.status(400).send({message: "Balance amount is required"});
         }
         if (!data.currency) {
@@ -63,9 +57,6 @@ const createAccount = async (req, res) => {
         if (isNaN(balanceFloat)) {
             return res.status(400).send({message: "Invalid balance amount"});
         }
-
-        console.log("Creating account for user:", user._id);
-        console.log("Account data:", data);
 
         const extstingAccountsCount = await accountModel.countDocuments({userId: user._id});
         const shouldBeDefault = extstingAccountsCount === 0 ? true : data.isDefault;
@@ -123,11 +114,7 @@ const getDashboardData = async (req, res) => {
             return res.status(404).send({message: "User not found"});
         }
 
-        // Get all user transactions ordered by date descending
-        const transactions = await transactionModel
-            .find({userId: user._id})
-            .sort({date: -1})
-            .lean();
+        const transactions = await transactionModel.find({userId: user._id}).sort({date: -1}).lean();
 
         return res.status(200).send(transactions);
     } catch (error) {

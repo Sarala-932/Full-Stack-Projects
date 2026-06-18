@@ -322,7 +322,7 @@ export default function TransactionTable({transactions, accountId, balance, onDe
           {/* Bulk Actions */}
           {selectedIds.length > 0 && (
             <div className="flex items-center gap-2">
-              <Button variant="destructive" size="sm" onClick={handleBulkDelete}>
+              <Button variant="destructive" size="sm" className="cursor-pointer" onClick={handleBulkDelete}>
                 <Trash className="h-4 w-4 mr-2" />
                 Delete Selected ({selectedIds.length})
               </Button>
@@ -366,6 +366,7 @@ export default function TransactionTable({transactions, accountId, balance, onDe
                     paginatedTransactions.length > 0
                   }
                   onCheckedChange={handleSelectAll}
+                  className="cursor-pointer"
                 />
               </TableHead>
               <TableHead className="cursor-pointer" onClick={() => handleSort("date")}>
@@ -428,6 +429,7 @@ export default function TransactionTable({transactions, accountId, balance, onDe
                     <Checkbox
                       checked={selectedIds.includes(transaction._id)}
                       onCheckedChange={() => handleSelect(transaction._id)}
+                      className="cursor-pointer"
                     />
                   </TableCell>
                   <TableCell>{format(new Date(transaction.date), "PP")}</TableCell>

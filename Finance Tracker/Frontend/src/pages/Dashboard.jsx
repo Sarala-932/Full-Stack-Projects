@@ -98,12 +98,12 @@ function Dashboard() {
             <Plus className="mr-2 h-4 w-4" />
             Add Account
           </Button>
-          <Link to="/transaction/create">
+          {/* <Link to="/transaction/create">
             <Button className="cursor-pointer">
               <Plus className="mr-2 h-4 w-4" />
               Add transaction
             </Button>
-          </Link>
+          </Link> */}
         </div>
       </div>
 
@@ -173,6 +173,7 @@ function Dashboard() {
 
       {/* Bottom Row */}
       <div className="grid gap-4 md:grid-cols-2">
+        
         {/* Accounts List */}
         <Card className="hover:shadow-md transition-shadow">
           <CardHeader className="flex flex-row items-center justify-between pb-2">

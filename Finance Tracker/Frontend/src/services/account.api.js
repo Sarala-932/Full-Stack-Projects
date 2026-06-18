@@ -1,8 +1,4 @@
-import axios from "axios";
-
-const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || "http://localhost:8000",
-});
+import api from "../lib/api.js";
 
 export const updateDefaultAccount = async (token, accountId) => {
   const res = await api.patch(

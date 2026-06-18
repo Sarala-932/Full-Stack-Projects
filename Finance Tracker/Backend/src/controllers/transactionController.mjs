@@ -302,7 +302,6 @@ export const scanReceipt = async (req, res) => {
 
         const response = await result.response;
         const text = response.text();
-        console.log("Raw Gemini Output:", text); // Helpful for debugging
         const cleanedText = text.replace(/```(?:json)?\n?/g, "").trim();
 
         try {

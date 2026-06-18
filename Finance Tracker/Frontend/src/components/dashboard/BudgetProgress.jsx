@@ -57,7 +57,10 @@ export default function BudgetProgress({accountId, initialBudget, currentExpense
       toast.error("Please enter a valid overall budget amount");
       return;
     }
-    await updateBudgetFn({ amount, accountId, categoryLimits });
+    try {
+      const res = await updateBudgetFn({ amount, accountId, categoryLimits });
+      if (res?.success) toast.success("Overall budget updated successfully");
+    } catch(e) {}
   };
 
   const handleCancel = () => {
@@ -91,8 +94,10 @@ export default function BudgetProgress({accountId, initialBudget, currentExpense
     setNewCategoryAmount("");
     
     if (initialBudget) {
-        // Save immediately if there's already an overall budget
-        await updateBudgetFn({ amount: initialBudget.amount, accountId, categoryLimits: updatedLimits });
+        try {
+          const res = await updateBudgetFn({ amount: initialBudget.amount, accountId, categoryLimits: updatedLimits });
+          if (res?.success) toast.success("Category limit added successfully");
+        } catch(e) {}
     }
   };
 
@@ -100,7 +105,10 @@ export default function BudgetProgress({accountId, initialBudget, currentExpense
     const updatedLimits = categoryLimits.filter(c => c.category !== categoryToRemove);
     setCategoryLimits(updatedLimits);
     if (initialBudget) {
-        await updateBudgetFn({ amount: initialBudget.amount, accountId, categoryLimits: updatedLimits });
+        try {
+          const res = await updateBudgetFn({ amount: initialBudget.amount, accountId, categoryLimits: updatedLimits });
+          if (res?.success) toast.error("Category limit deleted successfully");
+        } catch(e) {}
     }
   };
 
@@ -125,7 +133,10 @@ export default function BudgetProgress({accountId, initialBudget, currentExpense
     setEditingCategoryAmount("");
     
     if (initialBudget) {
-      await updateBudgetFn({ amount: initialBudget.amount, accountId, categoryLimits: updatedLimits });
+      try {
+        const res = await updateBudgetFn({ amount: initialBudget.amount, accountId, categoryLimits: updatedLimits });
+        if (res?.success) toast.success("Category limit updated successfully");
+      } catch(e) {}
     }
   };
 
@@ -137,7 +148,6 @@ export default function BudgetProgress({accountId, initialBudget, currentExpense
   useEffect(() => {
     if (updatedBudget?.success) {
       setIsEditing(false);
-      toast.success("Budget updated successfully");
       if (onUpdate) onUpdate();
     }
   }, [updatedBudget]);
@@ -171,10 +181,10 @@ export default function BudgetProgress({accountId, initialBudget, currentExpense
                     autoFocus
                     disabled={isLoading}
                   />
-                  <Button variant="ghost" size="icon" onClick={handleUpdateOverallBudget} disabled={isLoading}>
+                  <Button variant="ghost" size="icon" onClick={handleUpdateOverallBudget} disabled={isLoading} className="cursor-pointer">
                     <Check className="h-4 w-4 text-green-500" />
                   </Button>
-                  <Button variant="ghost" size="icon" onClick={handleCancel} disabled={isLoading}>
+                  <Button variant="ghost" size="icon" onClick={handleCancel} disabled={isLoading} className="cursor-pointer">
                     <X className="h-4 w-4 text-red-500" />
                   </Button>
                 </div>
@@ -185,7 +195,7 @@ export default function BudgetProgress({accountId, initialBudget, currentExpense
                       ? `₹${currentExpenses.toFixed(2)} of ₹${initialBudget.amount.toFixed(2)} spent`
                       : "No budget set for this account"}
                   </CardDescription>
-                  <Button variant="ghost" size="icon" onClick={() => setIsEditing(true)} className="h-6 w-6">
+                  <Button variant="ghost" size="icon" onClick={() => setIsEditing(true)} className="h-6 w-6 cursor-pointer">
                     <Pencil className="h-3 w-3" />
                   </Button>
                 </>
@@ -217,7 +227,7 @@ export default function BudgetProgress({accountId, initialBudget, currentExpense
               <CardDescription>Set budget limits for specific categories</CardDescription>
             </div>
             {!isAddingCategory && (
-              <Button variant="outline" size="sm" onClick={() => setIsAddingCategory(true)}>
+              <Button variant="outline" size="sm" className="cursor-pointer" onClick={() => setIsAddingCategory(true)}>
                 <Plus className="h-4 w-4 mr-2" /> Add Limit
               </Button>
             )}
@@ -226,12 +236,12 @@ export default function BudgetProgress({accountId, initialBudget, currentExpense
             {isAddingCategory && (
               <div className="flex items-center gap-2 p-3 border rounded-lg bg-muted/50 mb-4">
                 <Select value={newCategory} onValueChange={setNewCategory}>
-                  <SelectTrigger className="w-[180px] bg-background">
+                  <SelectTrigger className="w-[180px] bg-background cursor-pointer">
                     <SelectValue placeholder="Select category" />
                   </SelectTrigger>
                   <SelectContent>
                     {expenseCategories.map(c => (
-                      <SelectItem key={c.id} value={c.id}>{c.name}</SelectItem>
+                      <SelectItem key={c.id} value={c.id} className="cursor-pointer">{c.name}</SelectItem>
                     ))}
                   </SelectContent>
                 </Select>
@@ -242,8 +252,8 @@ export default function BudgetProgress({accountId, initialBudget, currentExpense
                   onChange={(e) => setNewCategoryAmount(e.target.value)}
                   className="w-32 bg-background"
                 />
-                <Button size="sm" onClick={handleAddCategoryLimit} disabled={isLoading}>Save</Button>
-                <Button size="icon" variant="ghost" onClick={() => setIsAddingCategory(false)}>
+                <Button size="sm" onClick={handleAddCategoryLimit} disabled={isLoading} className="cursor-pointer">Save</Button>
+                <Button size="icon" variant="ghost" onClick={() => setIsAddingCategory(false)} className="cursor-pointer">
                   <X className="h-4 w-4" />
                 </Button>
               </div>
@@ -272,10 +282,10 @@ export default function BudgetProgress({accountId, initialBudget, currentExpense
                               className="w-24 h-7 text-xs bg-background"
                               autoFocus
                             />
-                            <Button variant="ghost" size="icon" className="h-6 w-6" onClick={handleSaveCategoryLimit}>
+                            <Button variant="ghost" size="icon" className="h-6 w-6 cursor-pointer" onClick={handleSaveCategoryLimit}>
                               <Check className="h-4 w-4 text-green-500" />
                             </Button>
-                            <Button variant="ghost" size="icon" className="h-6 w-6" onClick={handleCancelEditCategory}>
+                            <Button variant="ghost" size="icon" className="h-6 w-6 cursor-pointer" onClick={handleCancelEditCategory}>
                               <X className="h-4 w-4 text-red-500" />
                             </Button>
                           </div>
@@ -288,10 +298,10 @@ export default function BudgetProgress({accountId, initialBudget, currentExpense
                       <div className="flex items-center gap-1">
                         {!editingCategory && (
                           <>
-                            <Button variant="ghost" size="icon" className="h-6 w-6 text-muted-foreground hover:text-primary" onClick={() => handleEditCategoryLimit(limit)}>
+                            <Button variant="ghost" size="icon" className="h-6 w-6 text-muted-foreground hover:text-primary cursor-pointer" onClick={() => handleEditCategoryLimit(limit)}>
                               <Pencil className="h-3 w-3" />
                             </Button>
-                            <Button variant="ghost" size="icon" className="h-6 w-6 text-muted-foreground hover:text-red-500" onClick={() => handleRemoveCategoryLimit(limit.category)}>
+                            <Button variant="ghost" size="icon" className="h-6 w-6 text-muted-foreground hover:text-red-500 cursor-pointer" onClick={() => handleRemoveCategoryLimit(limit.category)}>
                               <Trash2 className="h-3 w-3" />
                             </Button>
                           </>

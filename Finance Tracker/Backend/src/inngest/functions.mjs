@@ -240,11 +240,8 @@ export const checkBudgetAlerts = inngest.createFunction(
 
             await step.run(`check-budget-${budget._id}`, async () => {
                 const currentDate = new Date();
-                currentDate.setMonth(3); // 3 = April
                 const startDate = new Date(currentDate);
-                startDate.setDate(1);
-                // const startDate = new Date();
-                // startDate.setDate(1); // Start of current month
+                startDate.setDate(1); // Start of current month
                 startDate.setHours(0, 0, 0, 0);
 
                 // Calculate total expenses for the default account
@@ -269,7 +266,6 @@ export const checkBudgetAlerts = inngest.createFunction(
                 const totalExpenses = expenseAgg[0]?.total || 0;
                 const budgetAmount = budget.amount;
                 const percentageUsed = (totalExpenses / budgetAmount) * 100;
-                console.log(percentageUsed);
 
                 // Check if we should send an alert
                 if (

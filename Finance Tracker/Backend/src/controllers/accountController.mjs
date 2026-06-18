@@ -247,26 +247,34 @@ const deleteAccount = async (req, res) => {
       return res.status(404).json({success: false, message: "Account not found"});
     }
 
-    // Delete all transactions associated with this account
-    await transactionModel.deleteMany({
+    // Check 1: Cannot delete the default account
+    // (This also prevents deleting the last account, as the last account is always default)
+    if (account.isDefault) {
+      return res.status(400).json({
+        success: false,
+        message: "You cannot delete the default account. Please make another account default first."
+      });
+    }
+
+    // Check 2: Cannot delete if there are associated transactions
+    const transactionCount = await transactionModel.countDocuments({
       accountId: accountId,
       userId: user._id,
     });
 
+    if (transactionCount > 0) {
+      return res.status(400).json({
+        success: false,
+        message: "You cannot delete an account that has transactions. Please delete all transactions first."
+      });
+    }
+
     // Delete the account
     await accountModel.findByIdAndDelete(accountId);
 
-    // If it was the default account, make the most recently created account the new default
-    if (account.isDefault) {
-      const latestAccount = await accountModel.findOne({userId: user._id}).sort({createdAt: -1});
-      if (latestAccount) {
-        await accountModel.findByIdAndUpdate(latestAccount._id, {$set: {isDefault: true}});
-      }
-    }
-
     return res.status(200).send({
       success: true,
-      message: "Account and associated transactions deleted successfully",
+      message: "Account deleted successfully",
     });
   } catch (error) {
     return res.status(500).send({success: false, message: error.message});

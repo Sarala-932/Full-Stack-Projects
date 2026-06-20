@@ -24,9 +24,13 @@ export const transactionSchema = z
         type: z.enum(["INCOME", "EXPENSE"]),
         amount: z.string().min(1, "Amount is required"),
         description: z.string().optional(),
-        date: z.date({required_error: "Date is required"}),
-        accountId: z.string().min(1, "Account is required"),
-        category: z.string().min(1, "Category is required"),
+        date: z.date({required_error: "Date is required", invalid_type_error: "Date is required"}),
+        accountId: z
+            .string({required_error: "Account is required", invalid_type_error: "Account is required"})
+            .min(1, "Account is required"),
+        category: z
+            .string({required_error: "Category is required", invalid_type_error: "Category is required"})
+            .min(1, "Category is required"),
         isRecurring: z.boolean().default(false),
         recurringInterval: z.enum(["DAILY", "WEEKLY", "MONTHLY", "YEARLY"]).optional(),
     })
@@ -65,12 +69,15 @@ function AddTransactionForm({accounts, categories, editMode = false, initialData
                       ...initialData,
                       amount: initialData.amount.toString(),
                       date: new Date(initialData.date),
+                      description: initialData.description || "",
+                      recurringInterval: initialData.recurringInterval || undefined,
                   }
                 : {
                       type: "EXPENSE",
                       amount: "",
                       description: "",
                       accountId: defaultAccountId,
+                      category: "",
                       date: new Date(),
                       isRecurring: false,
                   },
@@ -85,6 +92,7 @@ function AddTransactionForm({accounts, categories, editMode = false, initialData
     const isRecurring = watch("isRecurring");
     const date = watch("date");
     const category = watch("category");
+    const accountId = watch("accountId");
     const recurringInterval = watch("recurringInterval");
     const [isDatePickerOpen, setIsDatePickerOpen] = useState(false);
 
@@ -93,6 +101,17 @@ function AddTransactionForm({accounts, categories, editMode = false, initialData
     useEffect(() => {
         inputValueRef.current = inputValue;
     }, [inputValue]);
+
+    // Jab accounts async load ho, toh default account form state mein set karo
+    useEffect(() => {
+        if (!editMode && accounts.length > 0) {
+            const currentAccountId = getValues("accountId");
+            if (!currentAccountId) {
+                const id = accountIdParam || accounts.find((ac) => ac.isDefault)?._id;
+                if (id) setValue("accountId", id);
+            }
+        }
+    }, [accounts]);
 
     useEffect(() => {
         if (date) {
@@ -194,10 +213,7 @@ function AddTransactionForm({accounts, categories, editMode = false, initialData
 
                 <div className="space-y-2">
                     <label className="text-sm font-medium">Account</label>
-                    <Select
-                        onValueChange={(value) => setValue("accountId", value)}
-                        defaultValue={getValues("accountId")}
-                    >
+                    <Select onValueChange={(value) => setValue("accountId", value)} value={accountId}>
                         <SelectTrigger>
                             <SelectValue placeholder="Select account" />
                         </SelectTrigger>
@@ -341,15 +357,20 @@ function AddTransactionForm({accounts, categories, editMode = false, initialData
             {/* Fixed Footer Actions */}
             <div className="fixed bottom-0 left-0 right-0 bg-white border-t p-6 shadow-[0_-2px_10px_rgba(0,0,0,0.05)] z-50">
                 <div className="max-w-3xl mx-auto flex flex-col gap-4 sm:flex-row">
-                    <Button type="button" variant="outline" className="flex-1 py-6 cursor-pointer" onClick={() => navigate(-1)}>
+                    <Button
+                        type="button"
+                        variant="outline"
+                        className="flex-1 py-6 cursor-pointer"
+                        onClick={() => navigate(-1)}
+                    >
                         Cancel
                     </Button>
-                    
+
                     {!editMode && (
                         <Button
                             type="submit"
                             variant="secondary"
-                            className="flex-1 py-6 cursor-pointer" 
+                            className="flex-1 py-6 cursor-pointer"
                             disabled={transactionLoading}
                             onClick={() => setSubmitAction("save-new")}
                         >
@@ -359,10 +380,10 @@ function AddTransactionForm({accounts, categories, editMode = false, initialData
                             Save and New
                         </Button>
                     )}
-            
+
                     <Button
                         type="submit"
-                        className="flex-1 py-6 cursor-pointer bg-blue-600 hover:bg-blue-700 text-white" 
+                        className="flex-1 py-6 cursor-pointer bg-blue-600 hover:bg-blue-700 text-white"
                         disabled={transactionLoading}
                         onClick={() => setSubmitAction("save")}
                     >

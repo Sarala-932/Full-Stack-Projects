@@ -12,7 +12,6 @@ const AddTransaction = () => {
     const editId = searchParams.get("edit");
 
     const {data: accounts, fn: fetchAccounts} = useFetch(getUserAccounts);
-    
     // Naya fetch hook transaction data lane ke liye
     const {
         data: transactionData,
@@ -38,11 +37,9 @@ const AddTransaction = () => {
                     {editId ? "Edit Transaction" : "Add Transaction"}
                 </h1>
             </div>
-            
+
             {/* Jab tak data fetch ho raha hai tab tak loader dikhao */}
-            {transactionLoading && (
-                <BarLoader className="mb-4" width={"100%"} color="#9333ea" />
-            )}
+            {transactionLoading && <BarLoader className="mb-4" width={"100%"} color="#9333ea" />}
 
             {/* Agar edit mode hai, to initialData form me pass karo */}
             {(!editId || transactionData?.data) && (

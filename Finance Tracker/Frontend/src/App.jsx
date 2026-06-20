@@ -1,14 +1,17 @@
 import React from "react";
 import AppRoutes from "./routes/AppRoutes";
 import AuthProvider from "./context/auth.context.jsx";
+import { ThemeProvider } from "./context/theme.context.jsx";
 import {Toaster} from "sonner";
 
 export default function App() {
     return (
         <div>
-            <AuthProvider>
-                <AppRoutes />
-            </AuthProvider>
+            <ThemeProvider>
+                <AuthProvider>
+                    <AppRoutes />
+                </AuthProvider>
+            </ThemeProvider>
             <Toaster
                 richColors
                 position="top-right"

@@ -4,15 +4,7 @@ import transactionModel from "../models/transactionModel.mjs";
 
 const updateDefaultAccount = async (req, res) => {
   try {
-    const clerkUserId = req.userId;
-    if (!clerkUserId) {
-      return res.status(401).send({message: "Unauthorized"});
-    }
-
-    const user = await userModel.findOne({clerkUserId});
-    if (!user) {
-      return res.status(404).send({message: "User not found"});
-    }
+        const user = req.user;
 
     // for testing
     // const user = await userModel.findById("69e511c4f568ca7dc4563289");
@@ -55,15 +47,7 @@ const updateDefaultAccount = async (req, res) => {
 
 const getAccountWithTransactions = async (req, res) => {
   try {
-    const clerkUserId = req.userId;
-    if (!clerkUserId) {
-      return res.status(401).send({message: "Unauthorized"});
-    }
-
-    const user = await userModel.findOne({clerkUserId}).select("_id").lean();
-    if (!user) {
-      return res.status(404).send({message: "User not found"});
-    }
+        const user = req.user;
 
     const {accountId} = req.params;
 
@@ -100,15 +84,7 @@ const getAccountWithTransactions = async (req, res) => {
 
 const bulkDeleteTransactions = async (req, res) => {
   try {
-    const clerkUserId = req.userId;
-    if (!clerkUserId) {
-      return res.status(401).send({message: "Unauthorized"});
-    }
-
-    const user = await userModel.findOne({clerkUserId});
-    if (!user) {
-      return res.status(404).send({message: "User not found"});
-    }
+        const user = req.user;
 
     const {transactionIds} = req.body;
     const {accountId} = req.params;
@@ -174,15 +150,7 @@ const bulkDeleteTransactions = async (req, res) => {
 
 const updateAccount = async (req, res) => {
   try {
-    const clerkUserId = req.userId;
-    if (!clerkUserId) {
-      return res.status(401).send({message: "Unauthorized"});
-    }
-
-    const user = await userModel.findOne({clerkUserId}).select("_id").lean();
-    if (!user) {
-      return res.status(404).send({message: "User not found"});
-    }
+        const user = req.user;
 
     const {accountId} = req.params;
     const {balance, name} = req.body;
@@ -226,15 +194,7 @@ const updateAccount = async (req, res) => {
 
 const deleteAccount = async (req, res) => {
   try {
-    const clerkUserId = req.userId;
-    if (!clerkUserId) {
-      return res.status(401).send({message: "Unauthorized"});
-    }
-
-    const user = await userModel.findOne({clerkUserId}).select("_id").lean();
-    if (!user) {
-      return res.status(404).send({message: "User not found"});
-    }
+        const user = req.user;
 
     const {accountId} = req.params;
 

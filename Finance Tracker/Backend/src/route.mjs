@@ -15,19 +15,28 @@ import {
     createTransaction,
     scanReceipt,
     getTransaction,
-    updateTransaction
+    updateTransaction,
 } from "./controllers/transactionController.mjs";
+import {
+    addInvestment,
+    getInvestments,
+    updateInvestment,
+    deleteInvestment,
+    syncLivePrices,
+    searchInvestments,
+    getLivePrice,
+} from "./controllers/investmentController.mjs";
 import multer from "multer";
 
 const router = express.Router();
-const upload = multer({ storage: multer.memoryStorage() });
+const upload = multer({storage: multer.memoryStorage()});
 
 router.get("/api", (req, res) => {
     res.send("API running successfully");
 });
 
 // create a user
-router.post("/api/register", authenticate, registerUser);
+router.post("/api/register", registerUser);
 
 // create a account
 router.post("/create-account", authenticate, createAccount);
@@ -67,5 +76,14 @@ router.post("/bulk-create", authenticate, bulkCreateTransactions);
 
 router.get("/transaction/:id", authenticate, getTransaction);
 router.put("/transaction/:id", authenticate, updateTransaction);
+
+// Investment routes
+router.get("/investments/search", authenticate, searchInvestments);
+router.get("/investments/price", authenticate, getLivePrice);
+router.post("/investments", authenticate, addInvestment);
+router.get("/investments", authenticate, getInvestments);
+router.put("/investments/:id", authenticate, updateInvestment);
+router.delete("/investments/:id", authenticate, deleteInvestment);
+router.post("/investments/sync", authenticate, syncLivePrices);
 
 export default router;

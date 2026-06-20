@@ -1,11 +1,12 @@
 import { Link, useLocation } from "react-router";
-import { LayoutDashboard, Wallet, Receipt, PieChart, BarChart3, Settings } from "lucide-react";
+import { LayoutDashboard, Wallet, Receipt, PieChart, BarChart3, Settings, TrendingUp } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const items = [
   { title: "Dashboard", url: "/dashboard", icon: LayoutDashboard },
   { title: "Accounts", url: "/accounts", icon: Wallet },
   { title: "Transactions", url: "/transactions", icon: Receipt },
+  { title: "Investments", url: "/investments", icon: TrendingUp },
   { title: "Budget", url: "/budget", icon: PieChart },
   { title: "Reports", url: "/reports", icon: BarChart3 },
   { title: "Settings", url: "/settings", icon: Settings },

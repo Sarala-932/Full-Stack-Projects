@@ -23,7 +23,8 @@ const steps = [
 
 export default function HowItWorksSection() {
   return (
-    <section className="bg-linear-to-br from-slate-950 via-slate-900 to-blue-950 px-4 py-24 text-white">
+    <section className="relative bg-transparent px-4 py-18 text-white overflow-hidden">
+      <div className="absolute inset-0 -z-20 bg-linear-to-br from-slate-950 via-slate-900 to-blue-950" />
       <div className="container mx-auto">
         <div className="mx-auto max-w-2xl text-center">
           <p className="text-sm font-semibold uppercase tracking-[0.35em] text-blue-300">How It Works</p>

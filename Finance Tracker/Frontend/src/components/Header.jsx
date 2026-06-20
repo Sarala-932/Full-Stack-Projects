@@ -1,5 +1,5 @@
 import {Show, UserButton} from "@clerk/react";
-import {LayoutDashboard, PenBox} from "lucide-react";
+import {PenBox} from "lucide-react";
 import {Link, useLocation} from "react-router";
 import {Button} from "./ui/button";
 
@@ -14,8 +14,10 @@ export default function Header() {
         : "/transaction/create";
 
     return (
-        <div className="fixed top-0 w-full bg-white/80 backdrop-blur-md z-50 border-b pr-0! mr-0!">
-            <nav className="container mx-auto px-4 py-4 flex items-center justify-between">
+        <div
+            className={`fixed top-0 w-full backdrop-blur-md z-50 border-b ${pathname === "/" ? "bg-slate-900/80 border-slate-800" : "bg-background/95 border-border"}`}
+        >
+            <nav className="w-full px-6 lg:px-24 py-4 flex items-center justify-between">
                 <Link to="/">
                     <img
                         src="/logo.svg"
@@ -39,7 +41,9 @@ export default function Header() {
                     <Show when="signed-out">
                         {!isSignInPage && (
                             <Link to="/sign-in">
-                                <Button variant="outline">Login</Button>
+                                <Button variant="outline" className="cursor-pointer">
+                                    Login
+                                </Button>
                             </Link>
                         )}
                     </Show>

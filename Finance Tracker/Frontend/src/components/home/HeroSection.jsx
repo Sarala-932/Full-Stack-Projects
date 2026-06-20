@@ -35,35 +35,43 @@ export default function HeroSection() {
   }, []);
 
   return (
-    <section className="relative overflow-hidden px-4 pt-30 pb-24">
-      <div className="absolute inset-0 -z-20 bg-linear-to-br from-blue-50 via-white to-cyan-50" />
-      <div className="absolute inset-x-0 top-0 -z-10 h-72 bg-linear-to-b from-blue-100/70 to-transparent blur-3xl" />
+    <section className="relative overflow-hidden px-4 pt-30 pb-20">
+      <div className="absolute inset-0 -z-20 bg-linear-to-br from-indigo-950 via-slate-900 to-blue-900" />
+      <div className="absolute inset-x-0 top-0 -z-10 h-96 bg-linear-to-b from-blue-600/20 to-transparent blur-3xl" />
+      
+      <div className="absolute -top-40 -right-40 -z-10 h-[500px] w-[500px] rounded-full bg-fuchsia-600/20 blur-[120px]" />
+      <div className="absolute top-40 -left-40 -z-10 h-[400px] w-[400px] rounded-full bg-cyan-500/20 blur-[120px]" />
 
       <div className="container mx-auto">
         <div className="mx-auto max-w-5xl text-center">
-          <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-blue-200 bg-white/80 px-4 py-2 text-sm font-medium text-blue-700 shadow-sm backdrop-blur">
+          <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-indigo-400/30 bg-indigo-500/20 px-4 py-2 text-sm font-medium text-indigo-200 shadow-sm backdrop-blur">
             <Sparkles className="size-4" />
             Finance tracking for modern teams and individuals
           </div>
 
-          <h1 className="gradient-title text-5xl leading-tight md:text-7xl lg:text-[96px]">
+          <h1 className="bg-linear-to-br from-white via-indigo-100 to-cyan-200 bg-clip-text text-transparent font-extrabold tracking-tighter pb-2 text-4xl leading-tight md:text-6xl lg:text-7xl">
             Manage Your Money With Calm, Clarity, and Momentum
           </h1>
 
-          <p className="mx-auto mt-6 max-w-3xl text-lg leading-8 text-slate-600 md:text-xl">
-            Wealth Wise helps you track transactions, monitor cash flow, and turn financial noise into clear
-            actions with real-time insights and focused reporting.
+          <p className="mx-auto mt-6 max-w-2xl text-base leading-7 text-indigo-200 md:text-lg md:leading-8">
+            Wealth Wise helps you track transactions, monitor cash flow, and turn financial noise
+            into clear actions with real-time insights and focused reporting.
           </p>
 
-          <div className="mt-10 flex flex-col items-center justify-center gap-3 sm:flex-row">
-            <Button asChild size="lg" className="px-8">
+          <div className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
+            <Button asChild size="lg" className="h-12 px-6 py-8 text-lg bg-blue-600 hover:bg-blue-500 text-white border-0 shadow-lg shadow-blue-600/20 cursor-pointer">
               <Link to="/sign-in">
                 Start Tracking
                 <ArrowRight className="size-4" />
               </Link>
             </Button>
 
-            <Button asChild size="lg" variant="outline" className="px-8">
+            <Button
+              asChild
+              size="lg"
+              variant="outline"
+              className="h-12 px-6 py-8 text-lg text-white border-white/20 bg-white/5 hover:bg-white/10 hover:text-white backdrop-blur cursor-pointer"
+            >
               <a href="https://www.youtube.com/" target="_blank" rel="noopener noreferrer">
                 <PlayCircle className="size-4" />
                 Watch Demo
@@ -71,11 +79,11 @@ export default function HeroSection() {
             </Button>
           </div>
 
-          <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
+          <div className="mt-10 flex flex-wrap items-center justify-center gap-3">
             {highlights.map((item) => (
               <div
                 key={item}
-                className="rounded-full border border-slate-200 bg-white/85 px-4 py-2 text-sm text-slate-700 shadow-sm"
+                className="rounded-full border border-slate-700 bg-slate-800/60 px-4 py-2 text-sm text-indigo-200 shadow-sm backdrop-blur"
               >
                 {item}
               </div>
@@ -83,31 +91,31 @@ export default function HeroSection() {
           </div>
         </div>
 
-        <div className="hero-image-wrapper relative mx-auto mt-16 max-w-6xl">
+        <div className="hero-image-wrapper relative mx-auto mt-14 max-w-5xl">
           <div
             ref={imageRef}
-            className="hero-image relative overflow-hidden rounded-[28px] border border-slate-200 bg-white p-3 shadow-[0_30px_80px_-30px_rgba(37,99,235,0.45)]"
+            className="hero-image relative rounded-[28px] border border-slate-700 bg-slate-800/40 p-3 shadow-[0_30px_100px_-30px_rgba(37,99,235,0.45)] backdrop-blur-xl"
           >
-            <div className="pointer-events-none absolute left-6 top-6 hidden rounded-2xl border border-slate-200 bg-white/95 p-4 shadow-lg md:block">
+            <div className="pointer-events-none absolute -left-8 bottom-16 z-10 hidden rounded-2xl border border-slate-700 bg-slate-900/80 p-4 shadow-2xl backdrop-blur-xl md:block lg:-left-12">
               <div className="flex items-center gap-3">
-                <div className="rounded-xl bg-emerald-100 p-2 text-emerald-700">
+                <div className="rounded-xl border border-emerald-500/30 bg-emerald-500/20 p-2 text-emerald-400">
                   <TrendingUp className="size-5" />
                 </div>
                 <div className="text-left">
                   <p className="text-xs uppercase tracking-[0.25em] text-slate-400">Net Savings</p>
-                  <p className="text-lg font-semibold text-slate-900">$18,240</p>
+                  <p className="text-lg font-semibold text-white">$18,240</p>
                 </div>
               </div>
             </div>
 
-            <div className="pointer-events-none absolute bottom-6 right-6 hidden rounded-2xl border border-slate-200 bg-white/95 p-4 shadow-lg lg:block">
+            <div className="pointer-events-none absolute -right-8 bottom-12 z-10 hidden rounded-2xl border border-slate-700 bg-slate-900/80 p-4 shadow-2xl backdrop-blur-xl lg:block lg:-right-12">
               <div className="flex items-center gap-3">
-                <div className="rounded-xl bg-blue-100 p-2 text-blue-700">
+                <div className="rounded-xl border border-blue-500/30 bg-blue-500/20 p-2 text-blue-400">
                   <ShieldCheck className="size-5" />
                 </div>
                 <div className="text-left">
                   <p className="text-xs uppercase tracking-[0.25em] text-slate-400">Protected</p>
-                  <p className="text-lg font-semibold text-slate-900">Bank-grade security</p>
+                  <p className="text-lg font-semibold text-white">Bank-grade security</p>
                 </div>
               </div>
             </div>
@@ -117,18 +125,18 @@ export default function HeroSection() {
               width={1280}
               height={720}
               alt="Wealth Wise dashboard preview"
-              className="mx-auto rounded-[22px] border border-slate-200 object-cover"
+              className="mx-auto h-auto w-full rounded-[22px] border border-slate-700 bg-transparent object-contain shadow-2xl"
             />
           </div>
 
-          <div className="mx-auto mt-6 grid max-w-3xl gap-4 md:grid-cols-2">
+          <div className="mx-auto mt-8 grid max-w-3xl gap-4 md:grid-cols-2">
             {quickStats.map((item) => (
               <div
                 key={item.label}
-                className="rounded-2xl border border-slate-200 bg-white/90 p-5 text-left shadow-sm backdrop-blur"
+                className="rounded-2xl border border-slate-700 bg-slate-800/60 p-5 text-left shadow-lg backdrop-blur-md"
               >
-                <p className="text-sm uppercase tracking-[0.3em] text-slate-400">{item.label}</p>
-                <p className="mt-2 text-3xl font-semibold text-slate-900">{item.value}</p>
+                <p className="text-sm uppercase tracking-[0.3em] text-indigo-300">{item.label}</p>
+                <p className="mt-2 text-3xl font-semibold text-white">{item.value}</p>
               </div>
             ))}
           </div>

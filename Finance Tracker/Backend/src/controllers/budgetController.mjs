@@ -6,15 +6,7 @@ import mongoose from "mongoose";
 // GET CURRENT BUDGET
 const getCurrentBudget = async (req, res) => {
   try {
-    const clerkUserId = req.userId;
-    if (!clerkUserId) {
-      return res.status(401).json({success: false, message: "Unauthorized"});
-    }
-
-    const user = await userModel.findOne({clerkUserId}).select("_id").lean();
-    if (!user) {
-      return res.status(404).json({success: false, message: "User not found"});
-    }
+        const user = req.user;
 
     const {accountId} = req.params;
 
@@ -85,15 +77,7 @@ const getCurrentBudget = async (req, res) => {
 
 const updateBudget = async (req, res) => {
   try {
-    const clerkUserId = req.userId;
-    if (!clerkUserId) {
-      return res.status(401).json({success: false, message: "Unauthorized"});
-    }
-
-    const user = await userModel.findOne({clerkUserId}).select("_id").lean();
-    if (!user) {
-      return res.status(404).json({success: false, message: "User not found"});
-    }
+        const user = req.user;
 
     const {amount, accountId, categoryLimits} = req.body;
 

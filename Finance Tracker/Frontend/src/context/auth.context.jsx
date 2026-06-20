@@ -29,7 +29,6 @@ function AuthProvider({children}) {
         };
         const response = await syncUserWithBackend(userData, token);
         setUser(response.data.user);
-        // console.log(response.data.user);
         setError(null);
       } catch (err) {
         setError(err.message);

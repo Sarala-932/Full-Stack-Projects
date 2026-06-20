@@ -282,6 +282,8 @@ function AddTransactionForm({accounts, categories, editMode = false, initialData
                     <PopoverContent
                         className="w-auto p-0"
                         align="start"
+                        side="bottom"
+                        avoidCollisions={false}
                         onOpenAutoFocus={(e) => e.preventDefault()}
                         onPointerDownOutside={(e) => {
                             if (e.target.closest(".date-input-container")) {
@@ -291,6 +293,9 @@ function AddTransactionForm({accounts, categories, editMode = false, initialData
                     >
                         <Calendar
                             mode="single"
+                            captionLayout="dropdown"
+                            startMonth={new Date(1990, 0)}
+                            endMonth={new Date()}
                             selected={date}
                             onSelect={(newDate) => {
                                 if (newDate) {
@@ -355,8 +360,8 @@ function AddTransactionForm({accounts, categories, editMode = false, initialData
             )}
 
             {/* Fixed Footer Actions */}
-            <div className="fixed bottom-0 left-0 right-0 bg-white border-t p-6 shadow-[0_-2px_10px_rgba(0,0,0,0.05)] z-50">
-                <div className="max-w-3xl mx-auto flex flex-col gap-4 sm:flex-row">
+            <div className="fixed bottom-0 left-0 md:left-60 right-0 bg-background border-t border-border py-4 shadow-[0_-2px_10px_rgba(0,0,0,0.05)] z-50">
+                <div className="max-w-3xl mx-auto flex flex-col gap-4 sm:flex-row px-6">
                     <Button
                         type="button"
                         variant="outline"

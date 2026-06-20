@@ -4,15 +4,7 @@ import transactionModel from "../models/transactionModel.mjs";
 
 const createAccount = async (req, res) => {
     try {
-        const clerkUserId = req.userId;
-        if (!clerkUserId) {
-            return res.status(401).send({message: "Unauthorized"});
-        }
-
-        const user = await userModel.findOne({clerkUserId}).select("_id").lean();
-        if (!user) {
-            return res.status(404).send({message: "User not found"});
-        }
+        const user = req.user;
 
         const data = req.body;
 
@@ -84,15 +76,7 @@ const createAccount = async (req, res) => {
 
 const getUserAccounts = async (req, res) => {
     try {
-        const clerkUserId = req.userId;
-        if (!clerkUserId) {
-            return res.status(401).send({message: "Unauthorized"});
-        }
-
-        const user = await userModel.findOne({clerkUserId}).select("_id").lean();
-        if (!user) {
-            return res.status(404).send({message: "User not found"});
-        }
+        const user = req.user;
 
         const accounts = await accountModel.find({userId: user._id}).sort({createdAt: -1}).lean();
 
@@ -104,15 +88,7 @@ const getUserAccounts = async (req, res) => {
 
 const getDashboardData = async (req, res) => {
     try {
-        const clerkUserId = req.userId;
-        if (!clerkUserId) {
-            return res.status(401).send({message: "Unauthorized"});
-        }
-
-        const user = await userModel.findOne({clerkUserId}).select("_id").lean();
-        if (!user) {
-            return res.status(404).send({message: "User not found"});
-        }
+        const user = req.user;
 
         const transactions = await transactionModel.find({userId: user._id}).sort({date: -1}).lean();
 

@@ -17,6 +17,8 @@ import TransactionsPage from "../pages/TransactionsPage";
 import BudgetPage from "../pages/BudgetPage";
 import ReportsPage from "../pages/ReportsPage";
 import AddTransaction from "../pages/AddTransaction";
+import InvestmentsPage from "../pages/InvestmentsPage";
+import SettingsPage from "../pages/SettingsPage";
 
 const ProtectedRoute = ({children}) => {
   const {isSignedIn, isLoaded} = useClerkAuth();
@@ -37,7 +39,7 @@ export default function AppRoutes() {
   return (
     <div className="flex flex-col min-h-screen">
       <Header />
-      <main className="grow pb-12">
+      <main className={`grow ${location.pathname === '/' ? '' : 'pb-12'}`}>
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/sign-in/*" element={<SignIn />} />
@@ -84,11 +86,31 @@ export default function AppRoutes() {
             }
           />
           <Route
+            path="/investments"
+            element={
+              <ProtectedRoute>
+                <AppLayout>
+                  <InvestmentsPage />
+                </AppLayout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
             path="/reports"
             element={
               <ProtectedRoute>
                 <AppLayout>
                   <ReportsPage />
+                </AppLayout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/settings"
+            element={
+              <ProtectedRoute>
+                <AppLayout>
+                  <SettingsPage />
                 </AppLayout>
               </ProtectedRoute>
             }

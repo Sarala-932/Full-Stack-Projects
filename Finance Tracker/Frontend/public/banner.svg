@@ -1,153 +1,237 @@
 <svg width="1280" height="720" viewBox="0 0 1280 720" fill="none" xmlns="http://www.w3.org/2000/svg">
   <defs>
-    <linearGradient id="wwBg" x1="70" y1="48" x2="1210" y2="660" gradientUnits="userSpaceOnUse">
-      <stop stop-color="#FFFDF5"/>
+    <linearGradient id="bg" x1="0" y1="0" x2="1280" y2="720" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#EFF6FF"/>
       <stop offset="0.5" stop-color="#F8FAFC"/>
       <stop offset="1" stop-color="#ECFEFF"/>
     </linearGradient>
-    <linearGradient id="wwPanel" x1="250" y1="110" x2="1040" y2="610" gradientUnits="userSpaceOnUse">
+    <linearGradient id="sidebar" x1="0" y1="0" x2="0" y2="720" gradientUnits="userSpaceOnUse">
       <stop stop-color="#0F172A"/>
-      <stop offset="0.5" stop-color="#111827"/>
-      <stop offset="1" stop-color="#0F766E"/>
+      <stop offset="1" stop-color="#0D2344"/>
     </linearGradient>
-    <linearGradient id="wwSurface" x1="472" y1="176" x2="980" y2="560" gradientUnits="userSpaceOnUse">
-      <stop stop-color="#FFFFFF"/>
-      <stop offset="1" stop-color="#F8FAFC"/>
-    </linearGradient>
-    <linearGradient id="wwAccent" x1="0" y1="0" x2="1" y2="1">
+    <linearGradient id="accent" x1="0" y1="0" x2="1" y2="1">
       <stop stop-color="#14B8A6"/>
       <stop offset="1" stop-color="#38BDF8"/>
     </linearGradient>
-    <filter id="wwPanelShadow" x="180" y="90" width="940" height="560" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
-      <feDropShadow dx="0" dy="40" stdDeviation="35" flood-color="#0F172A" flood-opacity="0.16"/>
+    <linearGradient id="cardBlue" x1="0" y1="0" x2="0" y2="1">
+      <stop stop-color="#EFF6FF"/>
+      <stop offset="1" stop-color="#DBEAFE"/>
+    </linearGradient>
+    <linearGradient id="cardGreen" x1="0" y1="0" x2="0" y2="1">
+      <stop stop-color="#ECFDF5"/>
+      <stop offset="1" stop-color="#D1FAE5"/>
+    </linearGradient>
+    <linearGradient id="cardDark" x1="0" y1="0" x2="0" y2="1">
+      <stop stop-color="#082F49"/>
+      <stop offset="1" stop-color="#0C4A6E"/>
+    </linearGradient>
+    <filter id="shadow" x="-5%" y="-5%" width="110%" height="120%">
+      <feDropShadow dx="0" dy="8" stdDeviation="20" flood-color="#0F172A" flood-opacity="0.12"/>
     </filter>
-    <filter id="wwFloatShadow" x="-20%" y="-20%" width="140%" height="160%" filterUnits="objectBoundingBox" color-interpolation-filters="sRGB">
-      <feDropShadow dx="0" dy="20" stdDeviation="22" flood-color="#0F172A" flood-opacity="0.16"/>
+    <filter id="cardShadow" x="-10%" y="-10%" width="120%" height="130%">
+      <feDropShadow dx="0" dy="4" stdDeviation="10" flood-color="#0F172A" flood-opacity="0.10"/>
     </filter>
+    <clipPath id="mainClip">
+      <rect width="1280" height="720" rx="28"/>
+    </clipPath>
   </defs>
 
-  <rect width="1280" height="720" rx="40" fill="url(#wwBg)"/>
-  <circle cx="167" cy="124" r="116" fill="#DBEAFE"/>
-  <circle cx="1112" cy="126" r="98" fill="#CCFBF1"/>
-  <circle cx="1088" cy="616" r="120" fill="#FEF3C7"/>
-  <path d="M96 566C204 512 346 490 484 528C616 564 758 596 912 560C1034 531 1128 468 1192 408" stroke="#BFDBFE" stroke-width="24" stroke-linecap="round" opacity="0.45"/>
+  <!-- Background -->
+  <rect width="1280" height="720" rx="28" fill="url(#bg)"/>
 
-  <g filter="url(#wwPanelShadow)">
-    <rect x="230" y="118" width="820" height="484" rx="38" fill="url(#wwPanel)"/>
-    <rect x="230.75" y="118.75" width="818.5" height="482.5" rx="37.25" stroke="white" stroke-opacity="0.08" stroke-width="1.5"/>
+  <!-- Decorative blobs -->
+  <circle cx="180" cy="130" r="130" fill="#DBEAFE" opacity="0.6"/>
+  <circle cx="1110" cy="100" r="100" fill="#CCFBF1" opacity="0.6"/>
+  <circle cx="1090" cy="640" r="110" fill="#FEF3C7" opacity="0.5"/>
+
+  <!-- ===== SIDEBAR ===== -->
+  <rect x="0" y="0" width="240" height="720" rx="0" fill="url(#sidebar)"/>
+  <!-- Sidebar top accent line -->
+  <rect x="0" y="0" width="240" height="4" fill="url(#accent)"/>
+
+  <!-- Logo area -->
+  <rect x="24" y="24" width="44" height="44" rx="12" fill="url(#accent)"/>
+  <!-- W icon inside logo -->
+  <text x="35" y="55" fill="white" font-size="22" font-weight="900" font-family="Arial, sans-serif">W</text>
+  <!-- App name -->
+  <text x="78" y="42" fill="#FFFFFF" font-size="18" font-weight="800" font-family="Segoe UI, Arial, sans-serif">Wealth Wise</text>
+  <text x="78" y="60" fill="#38BDF8" font-size="10" font-weight="700" letter-spacing="2.5" font-family="Segoe UI, Arial, sans-serif">CONTROL CENTER</text>
+
+  <!-- Divider -->
+  <rect x="24" y="88" width="192" height="1" fill="white" fill-opacity="0.08"/>
+
+  <!-- Nav Label -->
+  <text x="24" y="122" fill="#7DD3FC" font-size="10" font-weight="700" letter-spacing="2.5" font-family="Segoe UI, Arial, sans-serif">WORKSPACE</text>
+
+  <!-- Active nav item -->
+  <rect x="16" y="134" width="208" height="40" rx="10" fill="white" fill-opacity="0.10"/>
+  <rect x="16" y="134" width="3" height="40" rx="2" fill="url(#accent)"/>
+  <rect x="40" y="149" width="9" height="9" rx="2.5" fill="#38BDF8"/>
+  <text x="58" y="160" fill="#F8FAFC" font-size="14" font-weight="700" font-family="Segoe UI, Arial, sans-serif">Overview</text>
+
+  <!-- Nav items -->
+  <rect x="40" y="196" width="9" height="9" rx="2.5" fill="#14B8A6"/>
+  <text x="58" y="207" fill="#94A3B8" font-size="13" font-family="Segoe UI, Arial, sans-serif">Cashflow</text>
+
+  <rect x="40" y="232" width="9" height="9" rx="2.5" fill="#F59E0B"/>
+  <text x="58" y="243" fill="#94A3B8" font-size="13" font-family="Segoe UI, Arial, sans-serif">Budgets</text>
+
+  <rect x="40" y="268" width="9" height="9" rx="2.5" fill="#A78BFA"/>
+  <text x="58" y="279" fill="#94A3B8" font-size="13" font-family="Segoe UI, Arial, sans-serif">Investments</text>
+
+  <rect x="40" y="304" width="9" height="9" rx="2.5" fill="#34D399"/>
+  <text x="58" y="315" fill="#94A3B8" font-size="13" font-family="Segoe UI, Arial, sans-serif">Transactions</text>
+
+  <rect x="40" y="340" width="9" height="9" rx="2.5" fill="#F472B6"/>
+  <text x="58" y="351" fill="#94A3B8" font-size="13" font-family="Segoe UI, Arial, sans-serif">Goals</text>
+
+  <!-- User avatar at bottom of sidebar -->
+  <rect x="24" y="650" width="192" height="1" fill="white" fill-opacity="0.08"/>
+  <circle cx="46" cy="688" r="18" fill="#1E3A5F"/>
+  <text x="39" y="694" fill="#7DD3FC" font-size="14" font-weight="700" font-family="Arial">U</text>
+  <text x="72" y="684" fill="#F8FAFC" font-size="13" font-weight="600" font-family="Segoe UI, Arial, sans-serif">User</text>
+  <text x="72" y="700" fill="#64748B" font-size="11" font-family="Segoe UI, Arial, sans-serif">user@wealthwise.app</text>
+
+  <!-- ===== MAIN CONTENT ===== -->
+  <!-- Header -->
+  <text x="272" y="44" fill="#0F172A" font-size="22" font-weight="800" font-family="Segoe UI, Arial, sans-serif">Personal Finance at a Glance</text>
+  <text x="272" y="66" fill="#64748B" font-size="13" font-family="Segoe UI, Arial, sans-serif">Track spending, build savings, and review performance — all in one place.</text>
+
+  <!-- ===== STAT CARDS ROW ===== -->
+  <!-- Card 1: Net Worth -->
+  <g filter="url(#cardShadow)">
+    <rect x="272" y="88" width="218" height="112" rx="18" fill="url(#cardBlue)"/>
+    <rect x="272.5" y="88.5" width="217" height="111" rx="17.5" stroke="#BFDBFE" stroke-width="1"/>
   </g>
+  <text x="296" y="116" fill="#3B82F6" font-size="10" font-weight="700" letter-spacing="2" font-family="Segoe UI, Arial, sans-serif">NET WORTH</text>
+  <text x="296" y="152" fill="#0F172A" font-size="32" font-weight="800" font-family="Segoe UI, Arial, sans-serif">$82.4K</text>
+  <text x="296" y="176" fill="#10B981" font-size="12" font-weight="700" font-family="Segoe UI, Arial, sans-serif">↑ +12.8% vs last month</text>
 
-  <rect x="472" y="156" width="536" height="408" rx="30" fill="url(#wwSurface)"/>
-  <rect x="472.75" y="156.75" width="534.5" height="406.5" rx="29.25" stroke="#E2E8F0" stroke-width="1.5"/>
-
-  <g opacity="0.96">
-    <rect x="266" y="156" width="54" height="54" rx="16" fill="url(#wwAccent)"/>
-    <path d="M279 172L286 194L293.5 180L301 194L308.5 172" stroke="white" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
-    <path d="M282 168H310" stroke="#CFFAFE" stroke-width="2.6" stroke-linecap="round" opacity="0.85"/>
-    <text x="336" y="178" fill="#FFFFFF" font-size="26" font-weight="800" font-family="Segoe UI, Arial, sans-serif">Wealth Wise</text>
-    <text x="336" y="199" fill="#A5F3FC" font-size="10.5" font-weight="700" letter-spacing="3" font-family="Segoe UI, Arial, sans-serif">CONTROL CENTER</text>
+  <!-- Card 2: Budget Left -->
+  <g filter="url(#cardShadow)">
+    <rect x="506" y="88" width="218" height="112" rx="18" fill="white"/>
+    <rect x="506.5" y="88.5" width="217" height="111" rx="17.5" stroke="#E2E8F0" stroke-width="1"/>
   </g>
+  <text x="530" y="116" fill="#64748B" font-size="10" font-weight="700" letter-spacing="2" font-family="Segoe UI, Arial, sans-serif">BUDGET LEFT</text>
+  <text x="530" y="152" fill="#0F172A" font-size="32" font-weight="800" font-family="Segoe UI, Arial, sans-serif">$3.1K</text>
+  <text x="530" y="176" fill="#0284C7" font-size="12" font-weight="700" font-family="Segoe UI, Arial, sans-serif">Plenty of room this week</text>
 
-  <g font-family="Segoe UI, Arial, sans-serif">
-    <text x="266" y="262" fill="#7DD3FC" font-size="11" font-weight="700" letter-spacing="3">WORKSPACE</text>
-    <rect x="266" y="280" width="164" height="40" rx="14" fill="white" fill-opacity="0.12"/>
-    <text x="296" y="305" fill="#F8FAFC" font-size="16" font-weight="700">Overview</text>
-
-    <text x="296" y="356" fill="#CBD5E1" font-size="15">Cashflow</text>
-    <text x="296" y="402" fill="#CBD5E1" font-size="15">Budgets</text>
-    <text x="296" y="448" fill="#CBD5E1" font-size="15">Investments</text>
-    <text x="296" y="494" fill="#CBD5E1" font-size="15">Transactions</text>
-    <text x="296" y="540" fill="#CBD5E1" font-size="15">Goals</text>
+  <!-- Card 3: Health Score -->
+  <g filter="url(#cardShadow)">
+    <rect x="740" y="88" width="218" height="112" rx="18" fill="url(#cardDark)"/>
   </g>
+  <text x="764" y="116" fill="#A5F3FC" font-size="10" font-weight="700" letter-spacing="2" font-family="Segoe UI, Arial, sans-serif">SCORE</text>
+  <text x="764" y="152" fill="#FFFFFF" font-size="32" font-weight="800" font-family="Segoe UI, Arial, sans-serif">91</text>
+  <text x="764" y="176" fill="#6EE7B7" font-size="12" font-weight="700" font-family="Segoe UI, Arial, sans-serif">Financial health strong</text>
 
-  <g fill="#94A3B8">
-    <rect x="276" y="346" width="10" height="10" rx="3" fill="#38BDF8"/>
-    <rect x="276" y="392" width="10" height="10" rx="3" fill="#14B8A6"/>
-    <rect x="276" y="438" width="10" height="10" rx="3" fill="#F59E0B"/>
-    <rect x="276" y="484" width="10" height="10" rx="3" fill="#A78BFA"/>
-    <rect x="276" y="530" width="10" height="10" rx="3" fill="#34D399"/>
+  <!-- Card 4: Savings Rate -->
+  <g filter="url(#cardShadow)">
+    <rect x="974" y="88" width="278" height="112" rx="18" fill="url(#cardGreen)"/>
+    <rect x="974.5" y="88.5" width="277" height="111" rx="17.5" stroke="#A7F3D0" stroke-width="1"/>
   </g>
+  <text x="998" y="116" fill="#059669" font-size="10" font-weight="700" letter-spacing="2" font-family="Segoe UI, Arial, sans-serif">SAVINGS RATE</text>
+  <text x="998" y="152" fill="#0F172A" font-size="32" font-weight="800" font-family="Segoe UI, Arial, sans-serif">24%</text>
+  <text x="998" y="176" fill="#064E3B" font-size="12" font-weight="700" font-family="Segoe UI, Arial, sans-serif">Above your 20% goal ✓</text>
 
-  <g font-family="Segoe UI, Arial, sans-serif">
-    <text x="508" y="204" fill="#0F172A" font-size="30" font-weight="800">Personal finance at a glance</text>
-    <text x="508" y="230" fill="#64748B" font-size="15">Track spending, build savings, and review performance without spreadsheet clutter.</text>
+  <!-- ===== BOTTOM ROW ===== -->
+  <!-- Savings Momentum Card -->
+  <g filter="url(#cardShadow)">
+    <rect x="272" y="224" width="450" height="220" rx="18" fill="white"/>
+    <rect x="272.5" y="224.5" width="449" height="219" rx="17.5" stroke="#E2E8F0" stroke-width="1"/>
   </g>
+  <text x="296" y="256" fill="#0F172A" font-size="16" font-weight="800" font-family="Segoe UI, Arial, sans-serif">Savings Momentum</text>
+  <text x="296" y="276" fill="#64748B" font-size="12" font-family="Segoe UI, Arial, sans-serif">Progress toward active goals</text>
 
-  <g filter="url(#wwFloatShadow)">
-    <rect x="508" y="258" width="148" height="106" rx="24" fill="#F8FAFC"/>
-    <rect x="674" y="258" width="148" height="106" rx="24" fill="#EFF6FF"/>
-    <rect x="840" y="258" width="132" height="106" rx="24" fill="#082F49"/>
+  <!-- Goal 1 -->
+  <text x="296" y="306" fill="#334155" font-size="12" font-weight="600" font-family="Segoe UI, Arial, sans-serif">Emergency Fund</text>
+  <rect x="296" y="314" width="360" height="10" rx="5" fill="#E2E8F0"/>
+  <rect x="296" y="314" width="248" height="10" rx="5" fill="#14B8A6"/>
+  <text x="664" y="322" fill="#334155" font-size="11" font-weight="700" font-family="Segoe UI, Arial, sans-serif">69%</text>
+
+  <!-- Goal 2 -->
+  <text x="296" y="346" fill="#334155" font-size="12" font-weight="600" font-family="Segoe UI, Arial, sans-serif">Travel Plan</text>
+  <rect x="296" y="354" width="360" height="10" rx="5" fill="#E2E8F0"/>
+  <rect x="296" y="354" width="173" height="10" rx="5" fill="#38BDF8"/>
+  <text x="664" y="362" fill="#334155" font-size="11" font-weight="700" font-family="Segoe UI, Arial, sans-serif">48%</text>
+
+  <!-- Goal 3 -->
+  <text x="296" y="382" fill="#334155" font-size="12" font-weight="600" font-family="Segoe UI, Arial, sans-serif">Home Upgrade</text>
+  <rect x="296" y="390" width="360" height="10" rx="5" fill="#E2E8F0"/>
+  <rect x="296" y="390" width="284" height="10" rx="5" fill="#F59E0B"/>
+  <text x="664" y="398" fill="#334155" font-size="11" font-weight="700" font-family="Segoe UI, Arial, sans-serif">79%</text>
+
+  <!-- Goal 4 -->
+  <text x="296" y="414" fill="#334155" font-size="12" font-weight="600" font-family="Segoe UI, Arial, sans-serif">Retirement Fund</text>
+  <rect x="296" y="422" width="360" height="10" rx="5" fill="#E2E8F0"/>
+  <rect x="296" y="422" width="198" height="10" rx="5" fill="#A78BFA"/>
+  <text x="664" y="430" fill="#334155" font-size="11" font-weight="700" font-family="Segoe UI, Arial, sans-serif">55%</text>
+
+  <!-- Smart Split Card -->
+  <g filter="url(#cardShadow)">
+    <rect x="740" y="224" width="512" height="220" rx="18" fill="white"/>
+    <rect x="740.5" y="224.5" width="511" height="219" rx="17.5" stroke="#E2E8F0" stroke-width="1"/>
   </g>
+  <text x="764" y="256" fill="#0F172A" font-size="16" font-weight="800" font-family="Segoe UI, Arial, sans-serif">Smart Split</text>
+  <text x="764" y="276" fill="#64748B" font-size="12" font-family="Segoe UI, Arial, sans-serif">This month's spending breakdown</text>
 
-  <g font-family="Segoe UI, Arial, sans-serif">
-    <text x="532" y="290" fill="#64748B" font-size="12" font-weight="700" letter-spacing="2.2">NET WORTH</text>
-    <text x="532" y="329" fill="#0F172A" font-size="30" font-weight="800">$82.4K</text>
-    <text x="532" y="348" fill="#10B981" font-size="13" font-weight="700">+12.8% vs last month</text>
+  <!-- Donut Chart -->
+  <circle cx="858" cy="360" r="60" fill="none" stroke="#E2E8F0" stroke-width="22"/>
+  <path d="M858 300 A60 60 0 0 1 918 360" stroke="#38BDF8" stroke-width="22" stroke-linecap="round" fill="none"/>
+  <path d="M918 360 A60 60 0 0 1 876 414" stroke="#14B8A6" stroke-width="22" stroke-linecap="round" fill="none"/>
+  <path d="M876 414 A60 60 0 0 1 800 370" stroke="#F59E0B" stroke-width="22" stroke-linecap="round" fill="none"/>
+  <path d="M800 370 A60 60 0 0 1 858 300" stroke="#A78BFA" stroke-width="22" stroke-linecap="round" fill="none"/>
 
-    <text x="698" y="290" fill="#64748B" font-size="12" font-weight="700" letter-spacing="2.2">BUDGET LEFT</text>
-    <text x="698" y="329" fill="#0F172A" font-size="30" font-weight="800">$3.1K</text>
-    <text x="698" y="348" fill="#0284C7" font-size="13" font-weight="700">Plenty of room this week</text>
+  <!-- Legend -->
+  <rect x="960" y="316" width="11" height="11" rx="3" fill="#38BDF8"/>
+  <text x="978" y="327" fill="#334155" font-size="13" font-weight="600" font-family="Segoe UI, Arial, sans-serif">Essentials  42%</text>
 
-    <text x="864" y="290" fill="#A5F3FC" font-size="12" font-weight="700" letter-spacing="2.2">SCORE</text>
-    <text x="864" y="329" fill="#FFFFFF" font-size="30" font-weight="800">91</text>
-    <text x="864" y="348" fill="#6EE7B7" font-size="13" font-weight="700">Financial health strong</text>
-  </g>
+  <rect x="960" y="344" width="11" height="11" rx="3" fill="#14B8A6"/>
+  <text x="978" y="355" fill="#334155" font-size="13" font-weight="600" font-family="Segoe UI, Arial, sans-serif">Savings       24%</text>
 
-  <g filter="url(#wwFloatShadow)">
-    <rect x="508" y="390" width="310" height="138" rx="26" fill="white"/>
-    <rect x="838" y="390" width="134" height="138" rx="26" fill="#F8FAFC"/>
-  </g>
+  <rect x="960" y="372" width="11" height="11" rx="3" fill="#F59E0B"/>
+  <text x="978" y="383" fill="#334155" font-size="13" font-weight="600" font-family="Segoe UI, Arial, sans-serif">Leisure        19%</text>
 
-  <g font-family="Segoe UI, Arial, sans-serif">
-    <text x="532" y="422" fill="#0F172A" font-size="18" font-weight="800">Savings momentum</text>
-    <text x="532" y="443" fill="#64748B" font-size="13">Progress toward three active goals</text>
-  </g>
+  <rect x="960" y="400" width="11" height="11" rx="3" fill="#A78BFA"/>
+  <text x="978" y="411" fill="#334155" font-size="13" font-weight="600" font-family="Segoe UI, Arial, sans-serif">Investments 15%</text>
 
-  <rect x="532" y="462" width="262" height="12" rx="6" fill="#E2E8F0"/>
-  <rect x="532" y="462" width="182" height="12" rx="6" fill="#14B8A6"/>
-  <rect x="532" y="486" width="262" height="12" rx="6" fill="#E2E8F0"/>
-  <rect x="532" y="486" width="128" height="12" rx="6" fill="#38BDF8"/>
-  <rect x="532" y="510" width="262" height="12" rx="6" fill="#E2E8F0"/>
-  <rect x="532" y="510" width="208" height="12" rx="6" fill="#F59E0B"/>
+  <!-- ===== BOTTOM SECTION ===== -->
+  <!-- Recent Transactions label -->
+  <text x="272" y="478" fill="#0F172A" font-size="15" font-weight="800" font-family="Segoe UI, Arial, sans-serif">Recent Transactions</text>
 
-  <g fill="#334155" font-family="Segoe UI, Arial, sans-serif" font-size="12.5" font-weight="700">
-    <text x="532" y="457">Emergency fund</text>
-    <text x="745" y="457">69%</text>
-    <text x="532" y="481">Travel plan</text>
-    <text x="745" y="481">48%</text>
-    <text x="532" y="505">Home upgrade</text>
-    <text x="745" y="505">79%</text>
-  </g>
+  <!-- Transaction rows -->
+  <!-- Row 1 -->
+  <rect x="272" y="490" width="960" height="48" rx="12" fill="white"/>
+  <rect x="272.5" y="490.5" width="959" height="47" rx="11.5" stroke="#F1F5F9" stroke-width="1"/>
+  <circle cx="300" cy="514" r="14" fill="#EFF6FF"/>
+  <text x="292" y="519" fill="#3B82F6" font-size="13" font-weight="700" font-family="Arial">🛒</text>
+  <text x="324" y="510" fill="#0F172A" font-size="13" font-weight="600" font-family="Segoe UI, Arial, sans-serif">Grocery Store</text>
+  <text x="324" y="527" fill="#94A3B8" font-size="11" font-family="Segoe UI, Arial, sans-serif">Today, 9:30 AM • Essentials</text>
+  <text x="1176" y="519" fill="#EF4444" font-size="13" font-weight="700" font-family="Segoe UI, Arial, sans-serif" text-anchor="end">-$84.50</text>
 
-  <g font-family="Segoe UI, Arial, sans-serif">
-    <text x="862" y="422" fill="#0F172A" font-size="18" font-weight="800">Smart split</text>
-    <text x="862" y="443" fill="#64748B" font-size="13">This month</text>
-  </g>
+  <!-- Row 2 -->
+  <rect x="272" y="546" width="960" height="48" rx="12" fill="white"/>
+  <rect x="272.5" y="546.5" width="959" height="47" rx="11.5" stroke="#F1F5F9" stroke-width="1"/>
+  <circle cx="300" cy="570" r="14" fill="#ECFDF5"/>
+  <text x="292" y="575" fill="#10B981" font-size="13" font-weight="700" font-family="Arial">💰</text>
+  <text x="324" y="566" fill="#0F172A" font-size="13" font-weight="600" font-family="Segoe UI, Arial, sans-serif">Salary Deposit</text>
+  <text x="324" y="583" fill="#94A3B8" font-size="11" font-family="Segoe UI, Arial, sans-serif">Yesterday • Income</text>
+  <text x="1176" y="575" fill="#10B981" font-size="13" font-weight="700" font-family="Segoe UI, Arial, sans-serif" text-anchor="end">+$4,200.00</text>
 
-  <circle cx="906" cy="486" r="34" fill="none" stroke="#DBEAFE" stroke-width="14"/>
-  <path d="M906 452A34 34 0 0 1 939 478" stroke="#38BDF8" stroke-width="14" stroke-linecap="round"/>
-  <path d="M939 478A34 34 0 0 1 924 514" stroke="#14B8A6" stroke-width="14" stroke-linecap="round"/>
-  <path d="M924 514A34 34 0 0 1 882 506" stroke="#F59E0B" stroke-width="14" stroke-linecap="round"/>
+  <!-- Row 3 -->
+  <rect x="272" y="602" width="960" height="48" rx="12" fill="white"/>
+  <rect x="272.5" y="602.5" width="959" height="47" rx="11.5" stroke="#F1F5F9" stroke-width="1"/>
+  <circle cx="300" cy="626" r="14" fill="#FEF3C7"/>
+  <text x="292" y="631" fill="#F59E0B" font-size="13" font-weight="700" font-family="Arial">☕</text>
+  <text x="324" y="622" fill="#0F172A" font-size="13" font-weight="600" font-family="Segoe UI, Arial, sans-serif">Coffee Shop</text>
+  <text x="324" y="639" fill="#94A3B8" font-size="11" font-family="Segoe UI, Arial, sans-serif">Jun 18 • Leisure</text>
+  <text x="1176" y="631" fill="#EF4444" font-size="13" font-weight="700" font-family="Segoe UI, Arial, sans-serif" text-anchor="end">-$6.80</text>
 
-  <g fill="#475569" font-family="Segoe UI, Arial, sans-serif" font-size="12.5" font-weight="700">
-    <rect x="856" y="530" width="9" height="9" rx="3" fill="#38BDF8"/>
-    <text x="871" y="539">Essentials</text>
-    <rect x="856" y="550" width="9" height="9" rx="3" fill="#14B8A6"/>
-    <text x="871" y="559">Saving</text>
-  </g>
-
-  <g filter="url(#wwFloatShadow)">
-    <rect x="988" y="196" width="196" height="92" rx="22" fill="#FFFFFF"/>
-    <rect x="108" y="508" width="246" height="96" rx="26" fill="#FFFFFF"/>
-  </g>
-
-  <g font-family="Segoe UI, Arial, sans-serif">
-    <text x="1012" y="228" fill="#64748B" font-size="12" font-weight="700" letter-spacing="2.2">INSIGHT</text>
-    <text x="1012" y="257" fill="#0F172A" font-size="21" font-weight="800">Low risk week</text>
-    <text x="1012" y="277" fill="#14B8A6" font-size="13" font-weight="700">Spending stayed under plan</text>
-
-    <text x="132" y="540" fill="#64748B" font-size="12" font-weight="700" letter-spacing="2.2">SYNC STATUS</text>
-    <text x="132" y="569" fill="#0F172A" font-size="20" font-weight="800">All accounts fresh</text>
-    <text x="132" y="590" fill="#0284C7" font-size="13" font-weight="700">Updated 2 minutes ago</text>
-  </g>
+  <!-- Row 4 -->
+  <rect x="272" y="658" width="960" height="48" rx="12" fill="white"/>
+  <rect x="272.5" y="658.5" width="959" height="47" rx="11.5" stroke="#F1F5F9" stroke-width="1"/>
+  <circle cx="300" cy="682" r="14" fill="#F5F3FF"/>
+  <text x="292" y="687" fill="#8B5CF6" font-size="13" font-weight="700" font-family="Arial">📈</text>
+  <text x="324" y="678" fill="#0F172A" font-size="13" font-weight="600" font-family="Segoe UI, Arial, sans-serif">Mutual Fund SIP</text>
+  <text x="324" y="695" fill="#94A3B8" font-size="11" font-family="Segoe UI, Arial, sans-serif">Jun 17 • Investment</text>
+  <text x="1176" y="687" fill="#EF4444" font-size="13" font-weight="700" font-family="Segoe UI, Arial, sans-serif" text-anchor="end">-$500.00</text>
 </svg>

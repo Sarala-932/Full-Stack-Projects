@@ -32,14 +32,16 @@ const validRecurringIntervals = ["DAILY", "WEEKLY", "MONTHLY", "YEARLY"];
 
 export const createTransaction = async (req, res) => {
     try {
-        const clerkUserId = req.userId;
-        if (!clerkUserId) {
-            return res.status(401).json({success: false, message: "Unauthorized"});
+        const user = req.user;
+        if (!user) {
+            return res.status(404).json({success: false, message: "User not found"});
         }
+
+        const data = req.body;
 
         //Arcjet to add rate limiting
         const decision = await aj.protect(req, {
-            userId: clerkUserId,
+            userId: user.clerkUserId,
             requested: 1, // Specify how many tokens to consume
         });
 
@@ -62,13 +64,6 @@ export const createTransaction = async (req, res) => {
 
             return res.status(403).json({success: false, message: "Request blocked"});
         }
-
-        const user = await userModel.findOne({clerkUserId}).select("_id").lean();
-        if (!user) {
-            return res.status(404).json({success: false, message: "User not found"});
-        }
-
-        const data = req.body;
 
         const account = await accountModel.findOne({
             _id: data.accountId,
@@ -116,15 +111,7 @@ export const bulkCreateTransactions = async (req, res) => {
     let session;
 
     try {
-        const clerkUserId = req.userId;
-        if (!clerkUserId) {
-            return res.status(401).json({success: false, message: "Unauthorized"});
-        }
-
-        const user = await userModel.findOne({clerkUserId}).select("_id").lean();
-        if (!user) {
-            return res.status(404).json({success: false, message: "User not found"});
-        }
+        const user = req.user;
 
         const {transactions} = req.body;
 
@@ -332,10 +319,10 @@ export const scanReceipt = async (req, res) => {
         }
     } catch (error) {
         console.error("Error scanning receipt:", error);
-        
+
         // Extract a readable error message from Gemini API if possible
         const errorMessage = error?.message || "Failed to scan receipt";
-        
+
         // Return 500 but include the actual reason (e.g. Rate Limit, Quota Exceeded, 503 Service Unavailable)
         return res.status(500).json({success: false, message: errorMessage});
     }
@@ -343,20 +330,14 @@ export const scanReceipt = async (req, res) => {
 
 export const getTransaction = async (req, res) => {
     try {
-        const clerkUserId = req.userId;
-        if (!clerkUserId) {
-            return res.status(401).json({success: false, message: "Unauthorized"});
-        }
+        const user = req.user;
 
-        const user = await userModel.findOne({clerkUserId}).lean();
-        if (!user) {
-            return res.status(404).json({success: false, message: "User not found"});
-        }
-
-        const transaction = await transactionModel.findOne({
-            _id: req.params.id,
-            userId: user._id,
-        }).lean();
+        const transaction = await transactionModel
+            .findOne({
+                _id: req.params.id,
+                userId: user._id,
+            })
+            .lean();
 
         if (!transaction) {
             return res.status(404).json({success: false, message: "Transaction not found"});
@@ -389,10 +370,12 @@ export const updateTransaction = async (req, res) => {
         }
 
         // Get original transaction to calculate balance change
-        const originalTransaction = await transactionModel.findOne({
-            _id: id,
-            userId: user._id,
-        }).lean();
+        const originalTransaction = await transactionModel
+            .findOne({
+                _id: id,
+                userId: user._id,
+            })
+            .lean();
 
         if (!originalTransaction) {
             return res.status(404).json({success: false, message: "Transaction not found"});
@@ -400,12 +383,9 @@ export const updateTransaction = async (req, res) => {
 
         // Calculate balance changes
         const oldBalanceChange =
-            originalTransaction.type === "EXPENSE"
-                ? -originalTransaction.amount
-                : originalTransaction.amount;
+            originalTransaction.type === "EXPENSE" ? -originalTransaction.amount : originalTransaction.amount;
 
-        const newBalanceChange =
-            data.type === "EXPENSE" ? -data.amount : data.amount;
+        const newBalanceChange = data.type === "EXPENSE" ? -data.amount : data.amount;
 
         const netBalanceChange = newBalanceChange - oldBalanceChange;
 
@@ -415,7 +395,10 @@ export const updateTransaction = async (req, res) => {
         // Prepare update data
         const updateData = {...data};
         if (data.isRecurring && data.recurringInterval) {
-            updateData.nextRecurringDate = calculateNextRecurringDate(data.date || originalTransaction.date, data.recurringInterval);
+            updateData.nextRecurringDate = calculateNextRecurringDate(
+                data.date || originalTransaction.date,
+                data.recurringInterval,
+            );
         } else {
             updateData.nextRecurringDate = null;
         }
@@ -424,16 +407,12 @@ export const updateTransaction = async (req, res) => {
         const updatedTransaction = await transactionModel.findOneAndUpdate(
             {_id: id, userId: user._id},
             {$set: updateData},
-            {new: true, session}
+            {new: true, session},
         );
 
         // Update account balance
         const targetAccountId = data.accountId || originalTransaction.accountId;
-        await accountModel.findByIdAndUpdate(
-            targetAccountId,
-            {$inc: {balance: netBalanceChange}},
-            {session}
-        );
+        await accountModel.findByIdAndUpdate(targetAccountId, {$inc: {balance: netBalanceChange}}, {session});
 
         await session.commitTransaction();
 
@@ -441,7 +420,6 @@ export const updateTransaction = async (req, res) => {
             success: true,
             data: updatedTransaction,
         });
-
     } catch (error) {
         if (session) await session.abortTransaction();
         console.error("Error updating transaction:", error);

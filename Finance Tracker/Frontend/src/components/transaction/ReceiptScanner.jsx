@@ -1,4 +1,4 @@
-import {useRef, useEffect} from "react";
+import {useRef, useEffect, useState} from "react";
 import {Camera, Loader2} from "lucide-react";
 import {Button} from "@/components/ui/button";
 import {toast} from "sonner";
@@ -7,12 +7,12 @@ import {scanReceipt} from "@/services/transaction.api";
 
 export function ReceiptScanner({onScanComplete}) {
     const fileInputRef = useRef(null);
+    const [isScanning, setIsScanning] = useState(false);
 
     const {
-        loading: scanReceiptLoading,
         fn: scanReceiptFn,
         data: scannedData,
-        setData, // added to reset data on new scan
+        setData,
     } = useFetch(scanReceipt);
 
     const handleReceiptScan = async (file) => {
@@ -21,19 +21,23 @@ export function ReceiptScanner({onScanComplete}) {
             return;
         }
 
-        setData(undefined); // resets data so loading spinner shows again
-        await scanReceiptFn(file);
+        setData(undefined);
+        setIsScanning(true);
+        try {
+            await scanReceiptFn(file);
+        } finally {
+            setIsScanning(false);
+        }
     };
 
     useEffect(() => {
-        if (scannedData && !scanReceiptLoading) {
-            // scannedData will have .success and .data from our backend
+        if (scannedData && !isScanning) {
             if (scannedData.success) {
                 onScanComplete(scannedData.data);
                 toast.success("Receipt scanned successfully");
             }
         }
-    }, [scanReceiptLoading, scannedData]);
+    }, [isScanning, scannedData]);
 
     return (
         <div className="flex items-center gap-4">
@@ -57,9 +61,9 @@ export function ReceiptScanner({onScanComplete}) {
                 variant="outline"
                 className="w-full h-10 cursor-pointer bg-linear-to-br from-orange-500 via-pink-500 to-purple-500 animate-gradient hover:opacity-90 transition-opacity text-white hover:text-white"
                 onClick={() => fileInputRef.current?.click()}
-                disabled={scanReceiptLoading}
+                disabled={isScanning}
             >
-                {scanReceiptLoading ? (
+                {isScanning ? (
                     <>
                         <Loader2 className="mr-2 animate-spin" />
                         <span>Scanning Receipt...</span>

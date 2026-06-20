@@ -1,19 +1,19 @@
-import {useContext} from "react";
-import {AuthContext} from "../context/auth.context.jsx";
+// import {useContext} from "react";
+// import {AuthContext} from "../context/auth.context.jsx";
 
-export function useAuth() {
-    const context = useContext(AuthContext);
+// export function useAuth() {
+//     const context = useContext(AuthContext);
     
-    if (!context) {
-        throw new Error("useAuth must be used within an AuthProvider");
-    }
+//     if (!context) {
+//         throw new Error("useAuth must be used within an AuthProvider");
+//     }
 
-    const {user, loading, error, handleSync} = context;
+//     const {user, loading, error, handleSync} = context;
 
-    return {
-        user,
-        loading,
-        error,
-        sync: handleSync,
-    };
-}
+//     return {
+//         user,
+//         loading,
+//         error,
+//         sync: handleSync,
+//     };
+// }

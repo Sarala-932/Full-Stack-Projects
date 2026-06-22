@@ -12,7 +12,9 @@ const fetchLivePrice = async (symbol, assetType) => {
             if (response.ok) {
                 const data = await response.json();
                 if (data.chart?.result?.[0]?.meta?.regularMarketPrice) {
-                    return data.chart.result[0].meta.regularMarketPrice;
+                    const currentPrice = data.chart.result[0].meta.regularMarketPrice;
+                    const previousClose = data.chart.result[0].meta.chartPreviousClose || data.chart.result[0].meta.previousClose || currentPrice;
+                    return { currentPrice, previousClose };
                 }
             }
         } else if (assetType === "MUTUAL_FUND" && isNumeric) {
@@ -21,7 +23,9 @@ const fetchLivePrice = async (symbol, assetType) => {
             if (response.ok) {
                 const data = await response.json();
                 if (data.data && data.data.length > 0) {
-                    return parseFloat(data.data[0].nav);
+                    const currentPrice = parseFloat(data.data[0].nav);
+                    const previousClose = data.data.length > 1 ? parseFloat(data.data[1].nav) : currentPrice;
+                    return { currentPrice, previousClose };
                 }
             }
         }
@@ -38,9 +42,9 @@ export const getLivePrice = async (req, res) => {
             return res.status(400).json({ success: false, message: "Symbol and type are required" });
         }
         
-        const price = await fetchLivePrice(symbol, type);
-        if (price !== null) {
-            return res.status(200).json({ success: true, price });
+        const liveData = await fetchLivePrice(symbol, type);
+        if (liveData !== null) {
+            return res.status(200).json({ success: true, price: liveData.currentPrice, previousClose: liveData.previousClose });
         } else {
             return res.status(404).json({ success: false, message: "Price not found" });
         }
@@ -74,16 +78,19 @@ export const addInvestment = async (req, res) => {
         // If symbol is provided and currentPrice is not set or 0, try to fetch it
 
         let currentPrice = data.currentPrice;
+        let previousClose = null;
         if (data.symbol && (!currentPrice || currentPrice === 0)) {
-            const livePrice = await fetchLivePrice(data.symbol, data.assetType);
-            if (livePrice !== null) {
-                currentPrice = livePrice;
+            const liveData = await fetchLivePrice(data.symbol, data.assetType);
+            if (liveData !== null) {
+                currentPrice = liveData.currentPrice;
+                previousClose = liveData.previousClose;
             }
         }
 
         const investment = await investmentModel.create({
             ...data,
             currentPrice: currentPrice || data.purchasePrice, // fallback to purchase price
+            previousClose: previousClose || data.purchasePrice, // fallback
             userId: user._id,
         });
 
@@ -172,16 +179,17 @@ export const syncLivePrices = async (req, res) => {
         const updatedDetails = [];
 
         for (const inv of investments) {
-            const livePrice = await fetchLivePrice(inv.symbol, inv.assetType);
-            if (livePrice !== null && livePrice !== inv.currentPrice) {
+            const liveData = await fetchLivePrice(inv.symbol, inv.assetType);
+            if (liveData !== null && (liveData.currentPrice !== inv.currentPrice || liveData.previousClose !== inv.previousClose)) {
                 updatedDetails.push({
                     assetName: inv.assetName,
                     symbol: inv.symbol,
                     oldPrice: inv.currentPrice,
-                    newPrice: livePrice
+                    newPrice: liveData.currentPrice
                 });
                 
-                inv.currentPrice = livePrice;
+                inv.currentPrice = liveData.currentPrice;
+                inv.previousClose = liveData.previousClose;
                 updates.push(inv.save());
             }
         }

@@ -23,7 +23,7 @@ export default function AccountsList() {
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <h1 className="text-4xl font-bold tracking-tight gradient-title">Your Accounts</h1>
+        <h1 className="text-2xl font-semibold tracking-tight gradient-title">Your Accounts</h1>
       </div>
 
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">

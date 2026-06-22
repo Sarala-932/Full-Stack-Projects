@@ -3,12 +3,6 @@
 @import "shadcn/tailwind.css";
 @import "@fontsource-variable/geist";
 
-@layer base {
-    .gradient-title {
-        @apply bg-linear-to-br from-blue-700 via-blue-800 to-cyan-600 bg-clip-text text-transparent;
-    }
-}
-
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
@@ -184,7 +178,7 @@
         @apply bg-linear-to-br from-blue-600 to-purple-600;
     }
     .gradient-title {
-        @apply bg-linear-to-br from-blue-600 to-purple-600 font-extrabold tracking-tighter pr-2 pb-2 text-transparent bg-clip-text;
+        @apply bg-linear-to-br from-cyan-400 via-indigo-400 to-purple-400 font-extrabold tracking-tighter pr-2 pb-2 text-transparent bg-clip-text;
     }
 }
 .hero-image-wrapper {
@@ -213,4 +207,28 @@
 .animate-gradient {
     background-size: 200% 200%;
     animation: gradientMove 3s ease infinite;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #334155; /* slate-700 */
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #475569; /* slate-600 */
+}
+
+* {
+    scrollbar-width: thin;
+    scrollbar-color: #334155 transparent;
 }

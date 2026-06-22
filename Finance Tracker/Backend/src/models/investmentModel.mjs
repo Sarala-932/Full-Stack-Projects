@@ -31,6 +31,10 @@ const investmentSchema = new mongoose.Schema(
             required: true,
             min: [0, "Current price cannot be negative"],
         },
+        previousClose: {
+            type: Number,
+            default: null,
+        },
         purchaseDate: {
             type: Date,
             required: true,

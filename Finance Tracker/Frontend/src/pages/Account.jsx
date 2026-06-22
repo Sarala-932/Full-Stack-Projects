@@ -56,14 +56,14 @@ function Account() {
     }
 
     return (
-        <div className="space-y-8 px-6 py-4">
+        <div className="space-y-4 px-4 py-2">
             <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-end justify-between">
                 {/* Account Name and Type */}
                 <div>
-                    <h1 className="text-4xl sm:text-5xl font-bold tracking-tight capitalize gradient-title">
+                    <h1 className="text-3xl font-semibold tracking-tight capitalize gradient-title">
                         {account.name}
                     </h1>
-                    <p className="text-muted-foreground mt-2 text-sm sm:text-base">
+                    <p className="text-muted-foreground mt-1 text-xs">
                         {account.type.charAt(0) + account.type.slice(1).toLowerCase()} Account
                         {account.bankName && ` • ${account.bankName}`}
                     </p>
@@ -72,13 +72,13 @@ function Account() {
                 {/* Balance and Settings */}
                 <div className="flex flex-col items-start sm:items-end pb-1 gap-2">
                     <div className="text-left sm:text-right">
-                        <div className="text-3xl sm:text-4xl font-bold flex items-center justify-start sm:justify-end gap-2">
+                        <div className="text-xl font-semibold flex items-center justify-start sm:justify-end gap-2">
                             ₹{parseFloat(account.balance).toFixed(2)}
-                            <div className="mt-1">
+                            <div className="mt-0">
                                 <AccountSettings account={account} onUpdate={() => fetchAccount(accountId)} />
                             </div>
                         </div>
-                        <p className="text-sm text-muted-foreground mt-1">
+                        <p className="text-xs text-muted-foreground mt-1">
                             {account.transactionCount} Transactions
                         </p>
                     </div>

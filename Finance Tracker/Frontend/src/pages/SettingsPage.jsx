@@ -34,7 +34,7 @@ export default function SettingsPage() {
     return (
         <div className="space-y-6 px-4">
             <div className="flex flex-col gap-2">
-                <h1 className="text-3xl font-bold tracking-tight gradient-title">Settings</h1>
+                <h1 className="text-2xl font-semibold tracking-tight gradient-title">Settings</h1>
                 <p className="text-muted-foreground">Manage your application preferences and appearance.</p>
             </div>
 

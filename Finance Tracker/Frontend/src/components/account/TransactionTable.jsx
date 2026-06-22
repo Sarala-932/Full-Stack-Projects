@@ -84,7 +84,16 @@ export default function TransactionTable({
     const [searchTerm, setSearchTerm] = useState("");
     const [typeFilter, setTypeFilter] = useState("");
     const [recurringFilter, setRecurringFilter] = useState("");
-    const [currentPage, setCurrentPage] = useState(1);
+
+    const pageKey = `transactionPage-${accountId || "all"}`;
+    const [currentPage, setCurrentPage] = useState(() => {
+        const saved = sessionStorage.getItem(pageKey);
+        return saved ? parseInt(saved, 10) : 1;
+    });
+
+    useEffect(() => {
+        sessionStorage.setItem(pageKey, currentPage.toString());
+    }, [currentPage, pageKey]);
     const [deleteDialog, setDeleteDialog] = useState({isOpen: false, ids: []});
 
     const {loading: deleteLoading, fn: deleteFn, data: deleted} = useFetch(bulkDeleteTransactions);
@@ -398,7 +407,7 @@ export default function TransactionTable({
                                     ))}
                             </div>
                         </TableHead>
-                        <TableHead className="text-left w-full">Description</TableHead>
+                        <TableHead className="text-left w-full pl-8">Description</TableHead>
                         <TableHead className="cursor-pointer" onClick={() => handleSort("category")}>
                             <div className="flex items-center">
                                 Category
@@ -448,7 +457,7 @@ export default function TransactionTable({
                                     />
                                 </TableCell>
                                 <TableCell>{format(new Date(transaction.date), "PP")}</TableCell>
-                                <TableCell className="break-words whitespace-normal">
+                                <TableCell className="wrap-break-word whitespace-normal pl-8">
                                     {transaction.description}
                                 </TableCell>
                                 <TableCell className="capitalize">
@@ -456,21 +465,21 @@ export default function TransactionTable({
                                         style={{
                                             background: categoryColors[transaction.category],
                                         }}
-                                        className="px-2 py-1 rounded text-white text-sm"
+                                        className="px-1.5 py-0.5 rounded text-white text-[13px] font-medium leading-none inline-block"
                                     >
                                         {transaction.category}
                                     </span>
                                 </TableCell>
                                 <TableCell
                                     className={cn(
-                                        "text-right font-medium pr-10",
+                                        "text-right font-medium text-[13px] pr-10",
                                         transaction.type === "EXPENSE" ? "text-red-500" : "text-green-500",
                                     )}
                                 >
                                     {transaction.type === "EXPENSE" ? "-" : "+"}₹
                                     {transaction.amount.toFixed(2)}
                                 </TableCell>
-                                <TableCell className="text-right font-medium text-muted-foreground pr-10">
+                                <TableCell className="text-right font-medium text-[13px] text-muted-foreground pr-10">
                                     ₹{transaction.runningBalance.toFixed(2)}
                                 </TableCell>
                                 <TableCell className="text-center">

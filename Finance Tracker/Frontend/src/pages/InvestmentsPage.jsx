@@ -27,14 +27,22 @@ export default function InvestmentsPage() {
     const [isAddDrawerOpen, setIsAddDrawerOpen] = useState(false);
     const [editData, setEditData] = useState(null);
     const [activeTab, setActiveTab] = useState("ALL");
+    const [lastSyncTime, setLastSyncTime] = useState(0);
 
     useEffect(() => {
         fetchInvestments();
     }, []);
 
     const handleSync = async () => {
+        const now = Date.now();
+        if (now - lastSyncTime < 60000) {
+            toast.error("Please wait 1 minute before syncing again to avoid rate limits.");
+            return;
+        }
+
         await runSync();
         toast.success("Live prices synced successfully!");
+        setLastSyncTime(Date.now());
         fetchInvestments();
     };
 
@@ -76,10 +84,27 @@ export default function InvestmentsPage() {
     const tabReturnPercent = tabInvested > 0 ? (tabReturn / tabInvested) * 100 : 0;
     const tabIsProfit = tabReturn >= 0;
 
+    // Calculate Today's Profit
+    let todayInvestedBase = 0;
+    let todayCurrentBase = 0;
+
+    tabAssets.forEach(inv => {
+        const qty = inv.quantity;
+        const currentPrice = inv.currentPrice || inv.purchasePrice;
+        const prevClose = inv.previousClose || inv.purchasePrice;
+        
+        todayCurrentBase += (currentPrice * qty);
+        todayInvestedBase += (prevClose * qty);
+    });
+
+    const tabTodayReturn = todayCurrentBase - todayInvestedBase;
+    const tabTodayReturnPercent = todayInvestedBase > 0 ? (tabTodayReturn / todayInvestedBase) * 100 : 0;
+    const tabTodayIsProfit = tabTodayReturn >= 0;
+
     return (
-        <div className="space-y-6 px-4">
+        <div className="space-y-2">
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-                <h1 className="text-3xl font-bold tracking-tight gradient-title">Investment Portfolio</h1>
+                <h1 className="text-2xl font-semibold tracking-tight gradient-title">Investment Portfolio</h1>
                 <div className="flex gap-2">
                     <Button variant="outline" onClick={handleSync} disabled={syncLoading} className="cursor-pointer">
                         <RefreshCw className={`h-4 w-4 mr-2 ${syncLoading ? "animate-spin" : ""}`} />
@@ -96,7 +121,7 @@ export default function InvestmentsPage() {
                 
                 <div className="bg-[#0f172a] dark:bg-slate-950 p-6 rounded-xl border border-slate-800 shadow-sm mb-6">
                     <div className="flex flex-wrap items-center gap-6 mb-8 overflow-x-auto pb-2 border-b border-slate-800">
-                        <h2 className="text-xl font-semibold text-white whitespace-nowrap">My Portfolio</h2>
+                        <h2 className="text-lg font-semibold text-white whitespace-nowrap">My Portfolio</h2>
                         <TabsList className="bg-transparent h-auto p-0 space-x-2">
                             {availableTypes.map(type => (
                                 <TabsTrigger 
@@ -128,15 +153,18 @@ export default function InvestmentsPage() {
                         </div>
                         <div>
                             <p className="text-sm text-slate-500 mb-1">Today's Profit</p>
-                            <p className="text-2xl font-semibold text-slate-500">
-                                ₹0.00 <span className="text-base font-normal ml-2">(0.00%)</span>
+                            <p className={`text-2xl font-semibold ${tabTodayIsProfit ? "text-green-400" : "text-red-400"}`}>
+                                {tabTodayIsProfit ? "" : "-"}₹{Math.abs(tabTodayReturn).toLocaleString('en-IN', { maximumFractionDigits: 2, minimumFractionDigits: 2 })} 
+                                <span className="text-base font-normal ml-2">({tabTodayIsProfit ? "+" : ""}{tabTodayReturnPercent.toFixed(2)}%)</span>
                             </p> 
                         </div>
                     </div>
                     
                     <div className="mt-8 pt-4 border-t border-slate-800">
                         <p className="text-slate-400 text-sm">
-                            Today's P&L: <span className="text-white font-medium ml-1">₹ 0.00</span>
+                            Today's P&L: <span className={`font-medium ml-1 ${tabTodayIsProfit ? "text-green-400" : "text-red-400"}`}>
+                                {tabTodayIsProfit ? "+" : "-"} ₹ {Math.abs(tabTodayReturn).toLocaleString('en-IN', { maximumFractionDigits: 2, minimumFractionDigits: 2 })}
+                            </span>
                         </p>
                     </div>
                 </div>
@@ -150,13 +178,13 @@ export default function InvestmentsPage() {
                                             <TableRow className="hover:bg-transparent">
                                                 <TableHead>Asset Name</TableHead>
                                                 <TableHead>Symbol</TableHead>
-                                                <TableHead className="text-right">Quantity</TableHead>
-                                                <TableHead className="text-right">Avg. Price</TableHead>
-                                                <TableHead className="text-right">LTP</TableHead>
-                                                <TableHead className="text-right">Inv. Value</TableHead>
-                                                <TableHead className="text-right">Current Value</TableHead>
-                                                <TableHead className="text-right">Overall P&L</TableHead>
-                                                <TableHead className="text-right">Actions</TableHead>
+                                                <TableHead className="text-center">Quantity</TableHead>
+                                                <TableHead className="text-center">Avg. Price</TableHead>
+                                                <TableHead className="text-center">LTP</TableHead>
+                                                <TableHead className="text-center">Inv. Value</TableHead>
+                                                <TableHead className="text-center">Current Value</TableHead>
+                                                <TableHead className="text-center">Overall P&L</TableHead>
+                                                <TableHead className="text-center">Actions</TableHead>
                                             </TableRow>
                                         </TableHeader>
                                         <TableBody>
@@ -178,12 +206,12 @@ export default function InvestmentsPage() {
                                                         <TableRow key={inv._id}>
                                                             <TableCell className="font-medium">{inv.assetName}</TableCell>
                                                             <TableCell className="text-muted-foreground text-xs">{inv.symbol || "-"}</TableCell>
-                                                            <TableCell className="text-right">{inv.quantity}</TableCell>
-                                                            <TableCell className="text-right">₹{inv.purchasePrice.toLocaleString('en-IN', { maximumFractionDigits: 2 })}</TableCell>
-                                                            <TableCell className="text-right">₹{(inv.currentPrice || inv.purchasePrice).toLocaleString('en-IN', { maximumFractionDigits: 2 })}</TableCell>
-                                                            <TableCell className="text-right">₹{invested.toLocaleString('en-IN', { maximumFractionDigits: 2 })}</TableCell>
-                                                            <TableCell className="text-right">₹{current.toLocaleString('en-IN', { maximumFractionDigits: 2 })}</TableCell>
-                                                            <TableCell className={`text-right font-medium ${invIsProfit ? "text-green-600 dark:text-green-500" : "text-red-600 dark:text-red-500"}`}>
+                                                            <TableCell className="text-center">{inv.quantity}</TableCell>
+                                                            <TableCell className="text-center">₹{inv.purchasePrice.toLocaleString('en-IN', { maximumFractionDigits: 2 })}</TableCell>
+                                                            <TableCell className="text-center">₹{(inv.currentPrice || inv.purchasePrice).toLocaleString('en-IN', { maximumFractionDigits: 2 })}</TableCell>
+                                                            <TableCell className="text-center">₹{invested.toLocaleString('en-IN', { maximumFractionDigits: 2 })}</TableCell>
+                                                            <TableCell className="text-center">₹{current.toLocaleString('en-IN', { maximumFractionDigits: 2 })}</TableCell>
+                                                            <TableCell className={`text-center font-medium ${invIsProfit ? "text-green-600 dark:text-green-500" : "text-red-600 dark:text-red-500"}`}>
                                                                 {invIsProfit ? "+" : ""}₹{invReturn.toLocaleString('en-IN', { maximumFractionDigits: 2 })} 
                                                                 <span className="text-[10px] ml-1 block opacity-80">({invIsProfit ? "+" : ""}{invReturnPercent.toFixed(2)}%)</span>
                                                             </TableCell>

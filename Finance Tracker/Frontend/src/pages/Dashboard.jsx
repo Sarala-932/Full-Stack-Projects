@@ -107,7 +107,7 @@ function Dashboard() {
             {/* Header */}
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
                 <div>
-                    <h1 className="text-4xl font-bold tracking-tight gradient-title">
+                    <h1 className="text-2xl font-semibold tracking-tight gradient-title">
                         Hello, {user?.firstName || "User"}
                     </h1>
                     <p className="text-muted-foreground text-sm">Here's your financial overview</p>
@@ -128,10 +128,10 @@ function Dashboard() {
             <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
                 <Card className="hover:shadow-md transition-shadow bg-linear-to-br from-primary/5 via-primary/10 to-transparent border-primary/20">
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                        <CardTitle className="text-sm font-medium">Total balance</CardTitle>
+                        <CardTitle className="text-medium font-medium">Total balance</CardTitle>
                     </CardHeader>
                     <CardContent>
-                        <div className="text-2xl font-bold">
+                        <div className="text-lg font-semibold">
                             ₹{totalBalance.toLocaleString("en-IN", {minimumFractionDigits: 2})}
                         </div>
                         <p className="text-xs text-muted-foreground mt-1">
@@ -141,10 +141,10 @@ function Dashboard() {
                 </Card>
                 <Card className="hover:shadow-md transition-shadow">
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                        <CardTitle className="text-sm font-medium">Income this month</CardTitle>
+                        <CardTitle className="text-base font-medium">Income this month</CardTitle>
                     </CardHeader>
                     <CardContent>
-                        <div className="text-2xl font-bold text-green-500">
+                        <div className="text-lg font-semibold text-green-500">
                             ₹{incomeThisMonth.toLocaleString("en-IN", {minimumFractionDigits: 2})}
                         </div>
                         <p className="text-xs text-muted-foreground mt-1">{incomeCount} transactions</p>
@@ -152,10 +152,10 @@ function Dashboard() {
                 </Card>
                 <Card className="hover:shadow-md transition-shadow">
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                        <CardTitle className="text-sm font-medium">Expenses this month</CardTitle>
+                        <CardTitle className="text-base font-medium">Expenses this month</CardTitle>
                     </CardHeader>
                     <CardContent>
-                        <div className="text-2xl font-bold text-red-500">
+                        <div className="text-lg font-semibold text-red-500">
                             ₹{expensesThisMonth.toLocaleString("en-IN", {minimumFractionDigits: 2})}
                         </div>
                         <p className="text-xs text-muted-foreground mt-1">{expenseCount} transactions</p>
@@ -163,10 +163,10 @@ function Dashboard() {
                 </Card>
                 <Card className="hover:shadow-md transition-shadow">
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                        <CardTitle className="text-sm font-medium">Budget used</CardTitle>
+                        <CardTitle className="text-base font-medium">Budget used</CardTitle>
                     </CardHeader>
                     <CardContent>
-                        <div className="text-2xl font-bold">{budgetPercentage}%</div>
+                        <div className="text-lg font-semibold">{budgetPercentage}%</div>
                         <div className="mt-2 h-2 w-full bg-secondary rounded-full overflow-hidden">
                             <div
                                 className={cn(
@@ -196,15 +196,15 @@ function Dashboard() {
 
             {/* Investments Section */}
             <div className="space-y-4">
-                <h2 className="text-xl font-bold tracking-tight">Investment Overview</h2>
+                <h2 className="text-lg font-semibold tracking-tight">Investment Overview</h2>
                 <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
                     <div className="lg:col-span-3 grid gap-4 grid-cols-1 sm:grid-cols-3 items-start">
                         <Card className="hover:shadow-md transition-shadow">
                             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                                <CardTitle className="text-sm font-medium">Total Invested</CardTitle>
+                                <CardTitle className="text-base font-medium">Total Invested</CardTitle>
                             </CardHeader>
                             <CardContent>
-                                <div className="text-2xl font-bold">
+                                <div className="text-lg font-semibold">
                                     ₹
                                     {investmentMetrics.invested.toLocaleString("en-IN", {
                                         maximumFractionDigits: 2,
@@ -214,10 +214,10 @@ function Dashboard() {
                         </Card>
                         <Card className="hover:shadow-md transition-shadow">
                             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                                <CardTitle className="text-sm font-medium">Current Value</CardTitle>
+                                <CardTitle className="text-base font-medium">Current Value</CardTitle>
                             </CardHeader>
                             <CardContent>
-                                <div className="text-2xl font-bold">
+                                <div className="text-lg font-semibold">
                                     ₹
                                     {investmentMetrics.current.toLocaleString("en-IN", {
                                         maximumFractionDigits: 2,
@@ -227,11 +227,11 @@ function Dashboard() {
                         </Card>
                         <Card className="hover:shadow-md transition-shadow">
                             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                                <CardTitle className="text-sm font-medium">Total Returns</CardTitle>
+                                <CardTitle className="text-base font-medium">Total Returns</CardTitle>
                             </CardHeader>
                             <CardContent>
                                 <div
-                                    className={`flex items-center text-xl sm:text-2xl font-bold ${investmentMetrics.isProfit ? "text-green-500" : "text-red-500"}`}
+                                    className={`flex items-center text-lg font-semibold ${investmentMetrics.isProfit ? "text-green-500" : "text-red-500"}`}
                                 >
                                     {investmentMetrics.isProfit ? (
                                         <TrendingUp className="h-5 w-5 mr-1 shrink-0" />
@@ -271,10 +271,10 @@ function Dashboard() {
                     <CardContent className="space-y-4 pt-4">
                         {accounts?.map((account) => (
                             <Link key={account._id} to={`/accounts/${account._id}`}>
-                                <div className="flex items-center justify-between p-2 hover:bg-muted/50 rounded-lg cursor-pointer transition-colors">
-                                    <div className="flex items-center gap-3">
-                                        <div className="p-2 bg-secondary rounded-full">
-                                            <Wallet className="h-4 w-4" />
+                                <div className="flex items-center justify-between p-1.5 hover:bg-muted/50 rounded-lg cursor-pointer transition-colors">
+                                    <div className="flex items-center gap-2">
+                                        <div className="p-1.5 bg-secondary rounded-full">
+                                            <Wallet className="h-3.5 w-3.5" />
                                         </div>
                                         <div className="space-y-1">
                                             <p className="text-sm font-medium leading-none">{account.name}</p>
@@ -314,8 +314,8 @@ function Dashboard() {
                                 key={transaction._id}
                                 className="flex items-center justify-between p-2 hover:bg-muted/50 rounded-lg"
                             >
-                                <div className="flex items-center gap-3">
-                                    <div className="p-2 bg-secondary rounded-full capitalize text-xs font-semibold w-9 h-9 flex items-center justify-center">
+                                <div className="flex items-center gap-2">
+                                    <div className="p-1.5 bg-secondary rounded-full capitalize text-xs w-7 h-7 flex items-center justify-center">
                                         {transaction.category ? transaction.category.substring(0, 1) : "T"}
                                     </div>
                                     <div className="space-y-1">

@@ -39,9 +39,9 @@ export default function BudgetPage() {
   }, [selectedAccountId]);
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-2">
       <div className="flex items-center justify-between">
-        <h1 className="text-4xl font-bold tracking-tight gradient-title">Budget Management</h1>
+        <h1 className="text-2xl font-semibold tracking-tight gradient-title">Budget Management</h1>
         {accounts?.length > 0 && (
           <div className="w-64">
             <Select value={selectedAccountId} onValueChange={setSelectedAccountId}>

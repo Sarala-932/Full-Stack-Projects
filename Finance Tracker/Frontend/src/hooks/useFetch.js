@@ -13,10 +13,7 @@ const useFetch = (cb, cacheKey = null) => {
     const [error, setError] = useState(null);
 
     const fn = async (...args) => {
-        // Only show loading state if we don't already have data from cache
-        if (data === undefined) {
-            setLoading(true);
-        }
+        setLoading(true);
         setError(null);
 
         try {

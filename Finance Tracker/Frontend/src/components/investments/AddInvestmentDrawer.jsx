@@ -69,6 +69,7 @@ export default function AddInvestmentDrawer({
         control,
         watch,
         setValue,
+        getValues,
     } = useForm({
         resolver: zodResolver(investmentSchema),
         defaultValues: {
@@ -153,6 +154,7 @@ export default function AddInvestmentDrawer({
             const res = await fetchCurrentPrice(token, suggestion.symbol, mappedType);
             if (res.success && res.price) {
                 setValue("currentPrice", res.price.toFixed(2).toString(), { shouldValidate: true });
+                setValue("purchasePrice", res.price.toFixed(2).toString(), { shouldValidate: true });
                 toast.success(`Fetched current price: ${res.price}`);
             }
         } catch (err) {

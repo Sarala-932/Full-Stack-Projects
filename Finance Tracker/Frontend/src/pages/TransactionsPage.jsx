@@ -32,19 +32,13 @@ export default function TransactionsPage() {
     const recurringTransactions = filteredTransactions.filter((t) => t.isRecurring);
 
     return (
-        <div className="space-y-6">
+        <div className="space-y-2">
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-                <h1 className="text-4xl font-bold tracking-tight gradient-title">Transactions</h1>
-                {/* <Link to="/transaction/create">
-          <Button className="cursor-pointer">
-            <Plus className="mr-2 h-4 w-4" />
-            Add transaction
-          </Button>
-        </Link> */}
+                <h1 className="text-2xl font-semibold tracking-tight gradient-title">Transactions</h1>
             </div>
 
             <Tabs defaultValue="all" className="w-full">
-                <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
+                <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                     <TabsList className="grid w-full sm:max-w-[400px] grid-cols-2">
                         <TabsTrigger value="all" className="cursor-pointer">
                             All Transactions

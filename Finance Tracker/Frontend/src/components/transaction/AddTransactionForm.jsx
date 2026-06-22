@@ -183,7 +183,7 @@ function AddTransactionForm({accounts, categories, editMode = false, initialData
     };
 
     return (
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-6 pb-20">
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 pb-20">
             {/* Ai Receipt scanner */}
             <ReceiptScanner onScanComplete={handleScanComplete} />
 

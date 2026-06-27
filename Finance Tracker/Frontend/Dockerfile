@@ -3,7 +3,7 @@ FROM node:20-alpine AS builder
 WORKDIR /app
 
 ARG VITE_CLERK_PUBLISHABLE_KEY=pk_test_ZGFzaGluZy1lYXJ3aWctNDUuY2xlcmsuYWNjb3VudHMuZGV2JA
-ARG VITE_API_URL=http://localhost:8001
+ARG VITE_API_URL=https://finance-tracker-backend-fcxe.onrender.com
 ARG VITE_CLERK_SIGN_IN_URL=/sign-in
 ARG VITE_CLERK_SIGN_UP_URL=/sign-up
 

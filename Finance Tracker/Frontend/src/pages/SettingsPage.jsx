@@ -43,7 +43,7 @@ export default function SettingsPage() {
                     <CardHeader>
                         <CardTitle>Appearance</CardTitle>
                         <CardDescription>
-                            Customize the look and feel of your Finance Tracker.
+                            Customize the look and feel of your Wealth Wise.
                         </CardDescription>
                     </CardHeader>
                     <CardContent>

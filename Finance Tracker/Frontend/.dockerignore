@@ -1,0 +1,8 @@
+node_modules
+npm-debug.log
+dist
+.env
+.git
+.gitignore
+vite-dev.log
+vite-dev.err.log

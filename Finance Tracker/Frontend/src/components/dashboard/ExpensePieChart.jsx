@@ -63,17 +63,37 @@ export default function ExpensePieChart({ transactions }) {
         ) : (
           <div className="h-[300px]">
             <ResponsiveContainer width="100%" height="100%" minWidth={0}>
-              <PieChart>
+              <PieChart margin={{ top: 10, right: 30, bottom: 10, left: 30 }}>
                 <Pie
                   data={pieChartData}
                   cx="50%"
                   cy="50%"
-                  outerRadius={80}
+                  outerRadius={90}
                   dataKey="value"
-                  label={({ name, value }) => `${name}: ₹${value.toFixed(2)}`}
+                  labelLine={false}
+                  label={({ cx, cy, midAngle, innerRadius, outerRadius, percent }) => {
+                    if (percent < 0.05) return null;
+                    const RADIAN = Math.PI / 180;
+                    const radius = innerRadius + (outerRadius - innerRadius) * 0.5;
+                    const x = cx + radius * Math.cos(-midAngle * RADIAN);
+                    const y = cy + radius * Math.sin(-midAngle * RADIAN);
+                    return (
+                      <text
+                        x={x}
+                        y={y}
+                        fill="white"
+                        textAnchor="middle"
+                        dominantBaseline="central"
+                        fontSize={12}
+                        fontWeight="bold"
+                      >
+                        {`${(percent * 100).toFixed(0)}%`}
+                      </text>
+                    );
+                  }}
                 />
                 <Tooltip
-                  formatter={(value) => `₹${value.toFixed(2)}`}
+                  formatter={(value, name) => [`₹${value.toFixed(2)}`, name]}
                   contentStyle={{
                     backgroundColor: "hsl(var(--popover))",
                     border: "1px solid hsl(var(--border))",
@@ -84,6 +104,7 @@ export default function ExpensePieChart({ transactions }) {
               </PieChart>
             </ResponsiveContainer>
           </div>
+
         )}
       </CardContent>
     </Card>
